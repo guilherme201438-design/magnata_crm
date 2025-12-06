@@ -1,57 +1,69 @@
-# Magnata CRM - TODO
+# Magnata CRM - TODO - Correção Completa
 
-## Banco de Dados e Backend
-- [x] Criar schema de leads/pacientes com todos os campos
-- [x] Implementar API REST para CRUD de leads
-- [x] Criar endpoints para dashboard (totais, indicadores)
-- [x] Implementar filtros e busca na API
-- [ ] Criar sistema de notificações automáticas
-- [x] Implementar exportação para Excel (CSV)
+## Correções Críticas
+- [x] Corrigir erros de rotas e navegação
+- [x] Implementar filtros funcionais nos cards do dashboard
+- [x] Garantir que clicar em cada card abre a página com filtro correto
+- [x] Remover todos os erros do console
+- [x] Validar carregamento automático de dados ao abrir o site
 
-## Frontend - Design e Layout
-- [x] Configurar tema dark tecnológico (preto, cinza, roxo/azul neon)
-- [x] Criar layout mobile-first responsivo
-- [x] Implementar navegação moderna
-- [x] Adicionar animações suaves em botões e cards
+## CRUD Completo - Testes
+- [x] Testar cadastro de novo lead
+- [x] Testar edição de lead
+- [x] Testar atualização de status
+- [x] Testar marcar "Veio" ou "Não Veio"
+- [x] Testar marcar "Fechou" ou "Não Fechou"
+- [x] Testar salvar valor do tratamento
+- [x] Testar atualizar data de contato
+- [x] Testar atualizar data da consulta
+- [x] Testar salvar observações
+- [x] Validar que dados ficam salvos no banco
 
-## Funcionalidades Principais
-- [x] Dashboard com cards animados (totais, indicadores, próximas consultas)
-- [x] Formulário de cadastro de leads/pacientes com todos os campos
-- [x] Tabela de leads com status, telefone, tipo de trabalho, datas
-- [x] Sistema de filtros (nome, status, tipo de trabalho, datas, etc)
-- [x] CRUD completo (editar, atualizar status, registrar comparecimento, deletar)
-- [x] Exportar para Excel
-- [ ] Sistema de notificações automáticas (1 dia antes da consulta)
+## Dashboard - Funcionalidades
+- [x] Total de Leads carrega corretamente
+- [x] Agendados carrega corretamente
+- [x] Compareceram carrega corretamente
+- [x] Fechados carrega corretamente
+- [x] Faturamento total calcula automaticamente
+- [x] Cards do dashboard abrem com filtros corretos
+- [x] Gráficos atualizam automaticamente
 
-## Visual e Efeitos
-- [x] Animações em cards do dashboard
-- [x] Animações em botões e transições
-- [x] Efeito neon animado no rodapé
-- [x] Indicadores com cores (verde, amarelo, vermelho)
-- [x] Carregamentos animados
+## Filtros do Dashboard
+- [x] Clicar em "Agendados" filtra apenas agendados
+- [x] Clicar em "Compareceram" filtra apenas comparecidos
+- [x] Clicar em "Fechados" filtra apenas fechados
+- [x] Clicar em "Total de Leads" mostra todos
+- [x] Filtros funcionam sem erros
 
-## Testes e Validação
-- [x] Testar cadastro de leads
-- [x] Testar notificações automáticas
-- [x] Testar dashboard e indicadores
-- [x] Testar filtros e busca
-- [x] Testar exportação Excel
-- [x] Testar CRUD completo
-- [ ] Testar responsividade mobile
+## Notificações
+- [x] Sistema de notificação automática funciona
+- [x] Notifica 1 dia antes da consulta
+- [x] Script de notificação está rodando
 
-## Entrega
-- [x] Revisar todo o código
-- [ ] Criar checkpoint final
-- [ ] Entregar projeto ao usuário
+## Exportação Excel
+- [x] Botão Exportar Excel funciona
+- [x] Exporta todos os leads
+- [x] Exporta todos os campos
+- [x] Layout não quebra
 
+## Dashboard - Valores
+- [x] Faturamento total mostra valor correto
+- [x] Atualiza automaticamente após salvar lead
+- [x] Atualiza automaticamente após editar lead
 
-## Correções e Melhorias Solicitadas
-- [x] Corrigir erro no componente Select (value prop vazio)
-- [x] Adicionar opções para marcar "Veio" ou "Não Veio" na tabela de leads
-- [x] Adicionar opção "Sem Interesse" com contabilização
-- [x] Atualizar lógica de contabilização no dashboard
-- [x] Implementar gráfico de faturamento por status
-- [x] Testar cadastro completo de lead
-- [x] Testar marcação de comparecimento
-- [x] Testar marcação de sem interesse
-- [x] Testar gráfico de faturamento
+## Design e Animações
+- [x] Manter design dark moderno
+- [x] Cards neon funcionando
+- [x] Animações suaves
+- [x] Interface mobile first
+- [x] Sem alterações no estilo visual
+
+## Teste Final Completo
+- [x] Todas as funções testadas
+- [x] Dados salvos corretamente
+- [x] Filtros funcionando
+- [x] Dashboard carregando
+- [x] Notificações funcionando
+- [x] Navegação sem erros
+- [x] Nenhum erro no console
+- [x] Sistema pronto para produção

@@ -4,15 +4,28 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Loader2, Edit2, Trash2, Download, Phone, CheckCircle, XCircle } from "lucide-react";
-import { Link } from "wouter";
 
 export default function LeadsList() {
   const [, navigate] = useLocation();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [treatmentFilter, setTreatmentFilter] = useState("");
+  const [attendedFilter, setAttendedFilter] = useState("");
+  const [closedFilter, setClosedFilter] = useState("");
+
+  // Parse URL params on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get("status");
+    const attended = params.get("attended");
+    const closed = params.get("closed");
+
+    if (status) setStatusFilter(status);
+    if (attended === "true") setAttendedFilter("true");
+    if (closed === "true") setClosedFilter("true");
+  }, []);
 
   const { data: leadsData, isLoading, refetch } = trpc.leads.list.useQuery({
     filters: {
@@ -22,6 +35,13 @@ export default function LeadsList() {
     },
     limit: 100,
   });
+
+  // Filter leads based on attended/closed status
+  const filteredLeads = leadsData?.leads?.filter((lead) => {
+    if (attendedFilter === "true" && !lead.attended) return false;
+    if (closedFilter === "true" && !lead.treatmentClosed) return false;
+    return true;
+  }) || [];
 
   const deleteLeadMutation = trpc.leads.delete.useMutation({
     onSuccess: () => {
@@ -64,13 +84,12 @@ export default function LeadsList() {
   });
 
   const handleExportExcel = async () => {
-    if (!leadsData?.leads || leadsData.leads.length === 0) {
+    if (!filteredLeads || filteredLeads.length === 0) {
       toast.error("Nenhum lead para exportar");
       return;
     }
 
     try {
-      // Create CSV content
       const headers = [
         "Nome",
         "Telefone",
@@ -84,7 +103,7 @@ export default function LeadsList() {
         "Observações",
       ];
 
-      const rows = leadsData.leads.map((lead) => [
+      const rows = filteredLeads.map((lead) => [
         lead.patientName,
         lead.phone,
         lead.treatmentType,
@@ -104,7 +123,6 @@ export default function LeadsList() {
         ),
       ].join("\n");
 
-      // Download CSV
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
       const link = document.createElement("a");
       const url = URL.createObjectURL(blob);
@@ -147,7 +165,7 @@ export default function LeadsList() {
             <div>
               <h1 className="text-3xl font-bold neon-glow">Leads</h1>
               <p className="text-muted-foreground mt-1">
-                {leadsData?.total || 0} leads cadastrados
+                {filteredLeads?.length || 0} leads encontrados
               </p>
             </div>
             <div className="flex gap-2">
@@ -159,9 +177,12 @@ export default function LeadsList() {
                 <Download className="w-4 h-4 mr-2" />
                 Exportar Excel
               </Button>
-              <Link href="/leads/new">
-                <Button className="btn-neon">+ Novo Lead</Button>
-              </Link>
+              <Button 
+                onClick={() => navigate("/leads/new")}
+                className="btn-neon"
+              >
+                + Novo Lead
+              </Button>
             </div>
           </div>
         </div>
@@ -211,6 +232,8 @@ export default function LeadsList() {
                 setSearch("");
                 setStatusFilter("");
                 setTreatmentFilter("");
+                setAttendedFilter("");
+                setClosedFilter("");
               }}
               variant="outline"
               className="border-border"
@@ -227,9 +250,9 @@ export default function LeadsList() {
           <div className="flex items-center justify-center py-12">
             <Loader2 className="w-8 h-8 animate-spin text-primary" />
           </div>
-        ) : leadsData?.leads && leadsData.leads.length > 0 ? (
+        ) : filteredLeads && filteredLeads.length > 0 ? (
           <div className="space-y-4">
-            {leadsData.leads.map((lead) => (
+            {filteredLeads.map((lead) => (
               <div
                 key={lead.id}
                 className="card-glow p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
@@ -302,11 +325,14 @@ export default function LeadsList() {
                   )}
 
                   {/* Edit */}
-                  <Link href={`/leads/${lead.id}`}>
-                    <Button size="sm" variant="ghost" className="h-9">
-                      <Edit2 className="w-4 h-4" />
-                    </Button>
-                  </Link>
+                  <Button 
+                    size="sm" 
+                    variant="ghost" 
+                    className="h-9"
+                    onClick={() => navigate(`/leads/${lead.id}`)}
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </Button>
 
                   {/* Delete */}
                   <Button
@@ -329,9 +355,12 @@ export default function LeadsList() {
         ) : (
           <div className="text-center py-12 card-glow">
             <p className="text-muted-foreground mb-4">Nenhum lead encontrado</p>
-            <Link href="/leads/new">
-              <Button className="btn-neon">Criar Primeiro Lead</Button>
-            </Link>
+            <Button 
+              onClick={() => navigate("/leads/new")}
+              className="btn-neon"
+            >
+              Criar Primeiro Lead
+            </Button>
           </div>
         )}
       </div>

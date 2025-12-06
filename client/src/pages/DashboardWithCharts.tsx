@@ -1,14 +1,15 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
-import { Users, Calendar, CheckCircle, TrendingUp, AlertCircle, Loader2 } from "lucide-react";
-import { Link } from "wouter";
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { Users, Calendar, CheckCircle, TrendingUp, Loader2 } from "lucide-react";
+import { useLocation } from "wouter";
+import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useMemo } from "react";
 
 export default function DashboardWithCharts() {
   const { user } = useAuth();
+  const [, navigate] = useLocation();
+  
   const { data: stats, isLoading } = trpc.dashboard.stats.useQuery();
   const { data: leadsData } = trpc.leads.list.useQuery({
     filters: {},
@@ -101,6 +102,23 @@ export default function DashboardWithCharts() {
     return "text-red-400";
   };
 
+  // Handle card clicks with proper navigation
+  const handleCardClick = (filter: string) => {
+    const params = new URLSearchParams();
+    if (filter === "all") {
+      navigate("/leads");
+    } else if (filter === "scheduled") {
+      params.set("status", "Agendado");
+      navigate(`/leads?${params.toString()}`);
+    } else if (filter === "attended") {
+      params.set("attended", "true");
+      navigate(`/leads?${params.toString()}`);
+    } else if (filter === "closed") {
+      params.set("closed", "true");
+      navigate(`/leads?${params.toString()}`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
@@ -111,9 +129,9 @@ export default function DashboardWithCharts() {
               <h1 className="text-3xl font-bold neon-glow">Magnata do Marketing Digital</h1>
               <p className="text-muted-foreground mt-1">Dashboard com Análise de Faturamento</p>
             </div>
-            <Link href="/leads/new">
-              <Button className="btn-neon">+ Novo Lead</Button>
-            </Link>
+            <Button onClick={() => navigate("/leads/new")} className="btn-neon">
+              + Novo Lead
+            </Button>
           </div>
         </div>
       </div>
@@ -128,10 +146,13 @@ export default function DashboardWithCharts() {
           </p>
         </div>
 
-        {/* Stats Grid */}
+        {/* Stats Grid - Clickable Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
           {/* Total Leads */}
-          <div className="card-glow scale-in hover:scale-105 transition-transform">
+          <button
+            onClick={() => handleCardClick("all")}
+            className="card-glow scale-in hover:scale-105 transition-transform cursor-pointer text-left"
+          >
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-2">Total de Leads</p>
@@ -139,10 +160,13 @@ export default function DashboardWithCharts() {
               </div>
               <Users className="w-8 h-8 text-primary/50" />
             </div>
-          </div>
+          </button>
 
           {/* Scheduled */}
-          <div className="card-glow scale-in hover:scale-105 transition-transform">
+          <button
+            onClick={() => handleCardClick("scheduled")}
+            className="card-glow scale-in hover:scale-105 transition-transform cursor-pointer text-left"
+          >
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-2">Agendados</p>
@@ -150,10 +174,13 @@ export default function DashboardWithCharts() {
               </div>
               <Calendar className="w-8 h-8 text-blue-400/50" />
             </div>
-          </div>
+          </button>
 
           {/* Attended */}
-          <div className="card-glow scale-in hover:scale-105 transition-transform">
+          <button
+            onClick={() => handleCardClick("attended")}
+            className="card-glow scale-in hover:scale-105 transition-transform cursor-pointer text-left"
+          >
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-2">Compareceram</p>
@@ -163,10 +190,13 @@ export default function DashboardWithCharts() {
               </div>
               <CheckCircle className="w-8 h-8 text-green-400/50" />
             </div>
-          </div>
+          </button>
 
           {/* Closed */}
-          <div className="card-glow scale-in hover:scale-105 transition-transform">
+          <button
+            onClick={() => handleCardClick("closed")}
+            className="card-glow scale-in hover:scale-105 transition-transform cursor-pointer text-left"
+          >
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-2">Fechados</p>
@@ -176,7 +206,7 @@ export default function DashboardWithCharts() {
               </div>
               <TrendingUp className="w-8 h-8 text-purple-400/50" />
             </div>
-          </div>
+          </button>
 
           {/* Total Revenue */}
           <div className="card-glow scale-in hover:scale-105 transition-transform">
@@ -273,21 +303,26 @@ export default function DashboardWithCharts() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Link href="/leads">
-            <Button variant="outline" className="w-full h-12 border-primary/50 hover:bg-primary/10">
-              Ver Todos os Leads
-            </Button>
-          </Link>
-          <Link href="/leads/new">
-            <Button className="btn-neon w-full h-12">
-              Novo Lead
-            </Button>
-          </Link>
-          <Link href="/leads">
-            <Button variant="outline" className="w-full h-12 border-primary/50 hover:bg-primary/10">
-              Exportar Excel
-            </Button>
-          </Link>
+          <Button 
+            variant="outline" 
+            className="h-12 border-primary/50 hover:bg-primary/10"
+            onClick={() => navigate("/leads")}
+          >
+            Ver Todos os Leads
+          </Button>
+          <Button 
+            className="btn-neon h-12"
+            onClick={() => navigate("/leads/new")}
+          >
+            Novo Lead
+          </Button>
+          <Button 
+            variant="outline" 
+            className="h-12 border-primary/50 hover:bg-primary/10"
+            onClick={() => navigate("/leads")}
+          >
+            Exportar Excel
+          </Button>
         </div>
       </div>
 
