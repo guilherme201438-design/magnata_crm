@@ -1,11 +1,29 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import { Loader2, Edit2, Trash2, Download, Phone, CheckCircle, XCircle } from "lucide-react";
+
+const TREATMENT_TYPES = [
+  "Flexível",
+  "PPR",
+  "Prótese Total",
+  "Implante",
+  "Limpeza",
+  "Clareamento",
+  "Restauração",
+  "Outro"
+];
+
+const STATUS_OPTIONS = [
+  "A Confirmar",
+  "Agendado",
+  "Compareceu",
+  "Fechou",
+  "Sem Interesse"
+];
 
 export default function LeadsList() {
   const [, navigate] = useLocation();
@@ -15,7 +33,6 @@ export default function LeadsList() {
   const [attendedFilter, setAttendedFilter] = useState("");
   const [closedFilter, setClosedFilter] = useState("");
 
-  // Parse URL params on mount
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const status = params.get("status");
@@ -36,7 +53,6 @@ export default function LeadsList() {
     limit: 100,
   });
 
-  // Filter leads based on attended/closed status
   const filteredLeads = leadsData?.leads?.filter((lead) => {
     if (attendedFilter === "true" && !lead.attended) return false;
     if (closedFilter === "true" && !lead.treatmentClosed) return false;
@@ -198,35 +214,30 @@ export default function LeadsList() {
               onChange={(e) => setSearch(e.target.value)}
               className="bg-input border-border"
             />
-            <Select value={statusFilter || ""} onValueChange={setStatusFilter}>
-              <SelectTrigger className="bg-input border-border">
-                <SelectValue placeholder="Todos os status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">Todos os status</SelectItem>
-                <SelectItem value="A Confirmar">A Confirmar</SelectItem>
-                <SelectItem value="Agendado">Agendado</SelectItem>
-                <SelectItem value="Compareceu">Compareceu</SelectItem>
-                <SelectItem value="Fechou">Fechou</SelectItem>
-                <SelectItem value="Sem Interesse">Sem Interesse</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={treatmentFilter || ""} onValueChange={setTreatmentFilter}>
-              <SelectTrigger className="bg-input border-border">
-                <SelectValue placeholder="Tipo de tratamento" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">Todos os tipos</SelectItem>
-                <SelectItem value="Flexível">Flexível</SelectItem>
-                <SelectItem value="PPR">PPR</SelectItem>
-                <SelectItem value="Prótese Total">Prótese Total</SelectItem>
-                <SelectItem value="Implante">Implante</SelectItem>
-                <SelectItem value="Limpeza">Limpeza</SelectItem>
-                <SelectItem value="Clareamento">Clareamento</SelectItem>
-                <SelectItem value="Restauração">Restauração</SelectItem>
-                <SelectItem value="Outro">Outro</SelectItem>
-              </SelectContent>
-            </Select>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-3 py-2 bg-input border border-border rounded-md text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="">Todos os status</option>
+              {STATUS_OPTIONS.map((status) => (
+                <option key={status} value={status}>
+                  {status}
+                </option>
+              ))}
+            </select>
+            <select
+              value={treatmentFilter}
+              onChange={(e) => setTreatmentFilter(e.target.value)}
+              className="px-3 py-2 bg-input border border-border rounded-md text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="">Todos os tipos</option>
+              {TREATMENT_TYPES.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
             <Button
               onClick={() => {
                 setSearch("");
@@ -286,7 +297,6 @@ export default function LeadsList() {
 
                 {/* Action Buttons */}
                 <div className="flex flex-wrap gap-2">
-                  {/* Mark as attended */}
                   {!lead.attended && lead.status !== "Sem Interesse" && (
                     <Button
                       size="sm"
@@ -299,7 +309,6 @@ export default function LeadsList() {
                     </Button>
                   )}
 
-                  {/* Mark as no interest */}
                   {lead.status !== "Sem Interesse" && !lead.treatmentClosed && (
                     <Button
                       size="sm"
@@ -312,7 +321,6 @@ export default function LeadsList() {
                     </Button>
                   )}
 
-                  {/* Mark as closed */}
                   {lead.attended && !lead.treatmentClosed && (
                     <Button
                       size="sm"
@@ -324,7 +332,6 @@ export default function LeadsList() {
                     </Button>
                   )}
 
-                  {/* Edit */}
                   <Button 
                     size="sm" 
                     variant="ghost" 
@@ -334,7 +341,6 @@ export default function LeadsList() {
                     <Edit2 className="w-4 h-4" />
                   </Button>
 
-                  {/* Delete */}
                   <Button
                     size="sm"
                     variant="ghost"

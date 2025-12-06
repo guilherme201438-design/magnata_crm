@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -33,10 +32,25 @@ const leadSchema = z.object({
 
 type LeadFormData = z.infer<typeof leadSchema>;
 
+const TREATMENT_TYPES = [
+  "Flexível",
+  "PPR",
+  "Prótese Total",
+  "Implante",
+  "Limpeza",
+  "Clareamento",
+  "Restauração",
+  "Outro"
+];
+
 export default function NewLead() {
   const [, navigate] = useLocation();
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<LeadFormData>({
     resolver: zodResolver(leadSchema),
+    defaultValues: {
+      treatmentType: "Flexível",
+      origin: "Outro",
+    }
   });
 
   const createLeadMutation = trpc.leads.create.useMutation({
@@ -52,7 +66,7 @@ export default function NewLead() {
   const onSubmit = async (data: LeadFormData) => {
     createLeadMutation.mutate({
       ...data,
-      treatmentValue: Math.round(data.treatmentValue * 100), // Convert to cents
+      treatmentValue: Math.round(data.treatmentValue * 100),
       contactDate: new Date(data.contactDate),
       appointmentDate: data.appointmentDate ? new Date(data.appointmentDate) : undefined,
     });
@@ -80,138 +94,137 @@ export default function NewLead() {
 
       {/* Form */}
       <div className="container py-8">
-        <div className="max-w-2xl mx-auto card-glow">
+        <div className="max-w-2xl mx-auto card-glow p-8">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Patient Name */}
-            <div className="space-y-2">
+            {/* Nome do Paciente */}
+            <div>
               <Label htmlFor="patientName">Nome do Paciente *</Label>
               <Input
                 id="patientName"
-                placeholder="João Silva"
+                placeholder="Ex: João Silva"
                 {...register("patientName")}
-                className="bg-input border-border"
+                className="mt-2 bg-input border-border"
               />
               {errors.patientName && (
-                <p className="text-red-400 text-sm">{errors.patientName.message}</p>
+                <p className="text-red-400 text-sm mt-1">{errors.patientName.message}</p>
               )}
             </div>
 
-            {/* Phone */}
-            <div className="space-y-2">
+            {/* Telefone */}
+            <div>
               <Label htmlFor="phone">Telefone *</Label>
               <Input
                 id="phone"
-                placeholder="(85) 98765-4321"
+                placeholder="Ex: (85) 98765-4321"
                 {...register("phone")}
-                className="bg-input border-border"
+                className="mt-2 bg-input border-border"
               />
               {errors.phone && (
-                <p className="text-red-400 text-sm">{errors.phone.message}</p>
+                <p className="text-red-400 text-sm mt-1">{errors.phone.message}</p>
               )}
             </div>
 
-             // Treatment Type */
-            <div className="space-y-2">
+            {/* Tipo de Tratamento */}
+            <div>
               <Label htmlFor="treatmentType">Tipo de Tratamento *</Label>
-              <Select value={watch("treatmentType") || ""} onValueChange={(value) => setValue("treatmentType", value as any)}>
-                <SelectTrigger className="bg-input border-border">
-                  <SelectValue placeholder="Selecione o tipo de tratamento" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Flexível">Flexível</SelectItem>
-                  <SelectItem value="PPR">PPR</SelectItem>
-                  <SelectItem value="Prótese Total">Prótese Total</SelectItem>
-                  <SelectItem value="Implante">Implante</SelectItem>
-                  <SelectItem value="Limpeza">Limpeza</SelectItem>
-                  <SelectItem value="Clareamento">Clareamento</SelectItem>
-                  <SelectItem value="Restauração">Restauração</SelectItem>
-                  <SelectItem value="Outro">Outro</SelectItem>
-                </SelectContent>
-              </Select>
+              <select
+                id="treatmentType"
+                {...register("treatmentType")}
+                className="w-full mt-2 px-3 py-2 bg-input border border-border rounded-md text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                {TREATMENT_TYPES.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
               {errors.treatmentType && (
-                <p className="text-red-400 text-sm">{errors.treatmentType.message}</p>
+                <p className="text-red-400 text-sm mt-1">{errors.treatmentType.message}</p>
               )}
             </div>
 
-            {/* Treatment Value */}
-            <div className="space-y-2">
+            {/* Valor do Tratamento */}
+            <div>
               <Label htmlFor="treatmentValue">Valor do Tratamento (R$) *</Label>
               <Input
                 id="treatmentValue"
                 type="number"
-                placeholder="1500"
+                placeholder="Ex: 1500"
                 {...register("treatmentValue", { valueAsNumber: true })}
-                className="bg-input border-border"
+                className="mt-2 bg-input border-border"
               />
               {errors.treatmentValue && (
-                <p className="text-red-400 text-sm">{errors.treatmentValue.message}</p>
+                <p className="text-red-400 text-sm mt-1">{errors.treatmentValue.message}</p>
               )}
             </div>
 
-            {/* Contact Date */}
-            <div className="space-y-2">
+            {/* Data de Contato */}
+            <div>
               <Label htmlFor="contactDate">Data de Contato *</Label>
               <Input
                 id="contactDate"
                 type="date"
                 {...register("contactDate")}
-                className="bg-input border-border"
+                className="mt-2 bg-input border-border"
               />
               {errors.contactDate && (
-                <p className="text-red-400 text-sm">{errors.contactDate.message}</p>
+                <p className="text-red-400 text-sm mt-1">{errors.contactDate.message}</p>
               )}
             </div>
 
-            {/* Appointment Date */}
-            <div className="space-y-2">
+            {/* Data da Consulta */}
+            <div>
               <Label htmlFor="appointmentDate">Data da Consulta</Label>
               <Input
                 id="appointmentDate"
                 type="date"
                 {...register("appointmentDate")}
-                className="bg-input border-border"
+                className="mt-2 bg-input border-border"
               />
-              {errors.appointmentDate && (
-                <p className="text-red-400 text-sm">{errors.appointmentDate.message}</p>
-              )}
             </div>
 
-            {/* Origin */}
-            <div className="space-y-2">
+            {/* Origem */}
+            <div>
               <Label htmlFor="origin">Origem do Lead</Label>
-              <Input
+              <select
                 id="origin"
-                placeholder="Facebook, Google, Indicação, etc"
                 {...register("origin")}
-                className="bg-input border-border"
-              />
+                className="w-full mt-2 px-3 py-2 bg-input border border-border rounded-md text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <option value="Facebook">Facebook</option>
+                <option value="Instagram">Instagram</option>
+                <option value="WhatsApp">WhatsApp</option>
+                <option value="Indicação">Indicação</option>
+                <option value="Google">Google</option>
+                <option value="Outro">Outro</option>
+              </select>
             </div>
 
-            {/* Observations */}
-            <div className="space-y-2">
+            {/* Observações */}
+            <div>
               <Label htmlFor="observations">Observações</Label>
               <Textarea
                 id="observations"
                 placeholder="Adicione observações sobre o paciente..."
                 {...register("observations")}
-                className="bg-input border-border min-h-24"
+                className="mt-2 bg-input border-border min-h-24"
               />
             </div>
 
-            {/* Submit Button */}
-            <div className="flex gap-4 pt-4">
+            {/* Buttons */}
+            <div className="flex gap-4 pt-6">
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => navigate("/dashboard")}
                 className="flex-1 border-border"
+                onClick={() => navigate("/leads")}
               >
                 Cancelar
               </Button>
               <Button
                 type="submit"
+                className="flex-1 btn-neon"
                 disabled={createLeadMutation.isPending}
-                className="btn-neon flex-1"
               >
                 {createLeadMutation.isPending ? (
                   <>
@@ -226,6 +239,14 @@ export default function NewLead() {
           </form>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="border-t border-border mt-12 py-6 bg-card/50 backdrop-blur-sm">
+        <div className="container flex items-center justify-between text-sm text-muted-foreground">
+          <p>© {new Date().getFullYear()} Magnata do Marketing Digital I.A</p>
+          <p className="neon-glow-cyan">Sistema de Gestão de Leads</p>
+        </div>
+      </footer>
     </div>
   );
 }
