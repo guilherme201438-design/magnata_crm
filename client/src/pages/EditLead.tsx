@@ -174,7 +174,7 @@ export default function EditLead() {
             {/* Treatment Type */}
             <div className="space-y-2">
               <Label htmlFor="treatmentType">Tipo de Tratamento *</Label>
-              <Select onValueChange={(value) => setValue("treatmentType", value as any)}>
+              <Select value={watch("treatmentType") || ""} onValueChange={(value) => setValue("treatmentType", value as any)}>
                 <SelectTrigger className="bg-input border-border">
                   <SelectValue placeholder="Selecione o tipo de tratamento" />
                 </SelectTrigger>
@@ -240,7 +240,7 @@ export default function EditLead() {
             {/* Status */}
             <div className="space-y-2">
               <Label htmlFor="status">Status</Label>
-              <Select onValueChange={(value) => setValue("status", value as any)}>
+              <Select value={watch("status") || ""} onValueChange={(value) => setValue("status", value as any)}>
                 <SelectTrigger className="bg-input border-border">
                   <SelectValue placeholder="Selecione o status" />
                 </SelectTrigger>

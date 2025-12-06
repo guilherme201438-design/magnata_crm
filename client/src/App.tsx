@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import Dashboard from "@/pages/Dashboard";
+import DashboardWithCharts from "@/pages/DashboardWithCharts";
 import NewLead from "@/pages/NewLead";
 import LeadsList from "@/pages/LeadsList";
 import EditLead from "@/pages/EditLead";
@@ -42,8 +42,8 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
 function Router() {
   return (
     <Switch>
-      <Route path={"/"} component={() => <ProtectedRoute component={Dashboard} />} />
-      <Route path={"/dashboard"} component={() => <ProtectedRoute component={Dashboard} />} />
+      <Route path={"/"} component={() => <ProtectedRoute component={DashboardWithCharts} />} />
+      <Route path={"/dashboard"} component={() => <ProtectedRoute component={DashboardWithCharts} />} />
       <Route path={"/leads"} component={() => <ProtectedRoute component={LeadsList} />} />
       <Route path={"/leads/new"} component={() => <ProtectedRoute component={NewLead} />} />
       <Route path={"/leads/:id"} component={() => <ProtectedRoute component={EditLead} />} />

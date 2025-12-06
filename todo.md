@@ -43,3 +43,15 @@
 - [x] Revisar todo o código
 - [ ] Criar checkpoint final
 - [ ] Entregar projeto ao usuário
+
+
+## Correções e Melhorias Solicitadas
+- [x] Corrigir erro no componente Select (value prop vazio)
+- [x] Adicionar opções para marcar "Veio" ou "Não Veio" na tabela de leads
+- [x] Adicionar opção "Sem Interesse" com contabilização
+- [x] Atualizar lógica de contabilização no dashboard
+- [x] Implementar gráfico de faturamento por status
+- [x] Testar cadastro completo de lead
+- [x] Testar marcação de comparecimento
+- [x] Testar marcação de sem interesse
+- [x] Testar gráfico de faturamento

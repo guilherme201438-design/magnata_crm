@@ -110,10 +110,10 @@ export default function NewLead() {
               )}
             </div>
 
-            {/* Treatment Type */}
+             // Treatment Type */
             <div className="space-y-2">
               <Label htmlFor="treatmentType">Tipo de Tratamento *</Label>
-              <Select onValueChange={(value) => setValue("treatmentType", value as any)}>
+              <Select value={watch("treatmentType") || ""} onValueChange={(value) => setValue("treatmentType", value as any)}>
                 <SelectTrigger className="bg-input border-border">
                   <SelectValue placeholder="Selecione o tipo de tratamento" />
                 </SelectTrigger>

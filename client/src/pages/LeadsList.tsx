@@ -5,7 +5,7 @@ import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
 import { useState } from "react";
-import { Loader2, Edit2, Trash2, Download, Phone } from "lucide-react";
+import { Loader2, Edit2, Trash2, Download, Phone, CheckCircle, XCircle } from "lucide-react";
 import { Link } from "wouter";
 
 export default function LeadsList() {
@@ -177,7 +177,7 @@ export default function LeadsList() {
               onChange={(e) => setSearch(e.target.value)}
               className="bg-input border-border"
             />
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <Select value={statusFilter || ""} onValueChange={setStatusFilter}>
               <SelectTrigger className="bg-input border-border">
                 <SelectValue placeholder="Todos os status" />
               </SelectTrigger>
@@ -190,7 +190,7 @@ export default function LeadsList() {
                 <SelectItem value="Sem Interesse">Sem Interesse</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={treatmentFilter} onValueChange={setTreatmentFilter}>
+            <Select value={treatmentFilter || ""} onValueChange={setTreatmentFilter}>
               <SelectTrigger className="bg-input border-border">
                 <SelectValue placeholder="Tipo de tratamento" />
               </SelectTrigger>
@@ -228,81 +228,103 @@ export default function LeadsList() {
             <Loader2 className="w-8 h-8 animate-spin text-primary" />
           </div>
         ) : leadsData?.leads && leadsData.leads.length > 0 ? (
-          <div className="overflow-x-auto card-glow">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left py-4 px-4 font-semibold">Nome</th>
-                  <th className="text-left py-4 px-4 font-semibold">Telefone</th>
-                  <th className="text-left py-4 px-4 font-semibold">Tipo</th>
-                  <th className="text-left py-4 px-4 font-semibold">Valor</th>
-                  <th className="text-left py-4 px-4 font-semibold">Contato</th>
-                  <th className="text-left py-4 px-4 font-semibold">Consulta</th>
-                  <th className="text-left py-4 px-4 font-semibold">Status</th>
-                  <th className="text-left py-4 px-4 font-semibold">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {leadsData.leads.map((lead) => (
-                  <tr
-                    key={lead.id}
-                    className="border-b border-border/50 hover:bg-card/50 transition-colors"
-                  >
-                    <td className="py-4 px-4">{lead.patientName}</td>
-                    <td className="py-4 px-4">
-                      <a
-                        href={`tel:${lead.phone}`}
-                        className="flex items-center gap-2 text-primary hover:underline"
-                      >
-                        <Phone className="w-4 h-4" />
+          <div className="space-y-4">
+            {leadsData.leads.map((lead) => (
+              <div
+                key={lead.id}
+                className="card-glow p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+              >
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg">{lead.patientName}</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2 text-sm text-muted-foreground">
+                    <div>
+                      <p className="text-xs">Telefone</p>
+                      <a href={`tel:${lead.phone}`} className="text-primary hover:underline flex items-center gap-1">
+                        <Phone className="w-3 h-3" />
                         {lead.phone}
                       </a>
-                    </td>
-                    <td className="py-4 px-4 text-sm">{lead.treatmentType}</td>
-                    <td className="py-4 px-4">R$ {(lead.treatmentValue / 100).toFixed(2)}</td>
-                    <td className="py-4 px-4 text-sm">
-                      {new Date(lead.contactDate).toLocaleDateString("pt-BR")}
-                    </td>
-                    <td className="py-4 px-4 text-sm">
-                      {lead.appointmentDate
-                        ? new Date(lead.appointmentDate).toLocaleDateString("pt-BR")
-                        : "-"}
-                    </td>
-                    <td className="py-4 px-4">
-                      <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${getStatusBadgeClass(lead.status)}`}>
+                    </div>
+                    <div>
+                      <p className="text-xs">Tipo</p>
+                      <p>{lead.treatmentType}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs">Valor</p>
+                      <p className="text-primary font-semibold">R$ {(lead.treatmentValue / 100).toFixed(2)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs">Status</p>
+                      <span className={`inline-block px-2 py-1 rounded text-xs font-medium border ${getStatusBadgeClass(lead.status)}`}>
                         {lead.status}
                       </span>
-                    </td>
-                    <td className="py-4 px-4">
-                      <div className="flex gap-2">
-                        <Link href={`/leads/${lead.id}`}>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-8 w-8 p-0"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </Button>
-                        </Link>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="h-8 w-8 p-0 text-red-400 hover:bg-red-400/10"
-                          onClick={() => {
-                            if (confirm("Tem certeza que deseja deletar este lead?")) {
-                              deleteLeadMutation.mutate({ id: lead.id });
-                            }
-                          }}
-                          disabled={deleteLeadMutation.isPending}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-wrap gap-2">
+                  {/* Mark as attended */}
+                  {!lead.attended && lead.status !== "Sem Interesse" && (
+                    <Button
+                      size="sm"
+                      onClick={() => markAttendedMutation.mutate({ id: lead.id, attended: true })}
+                      disabled={markAttendedMutation.isPending}
+                      className="bg-green-500/20 text-green-300 border border-green-500/30 hover:bg-green-500/30"
+                    >
+                      <CheckCircle className="w-4 h-4 mr-1" />
+                      Veio
+                    </Button>
+                  )}
+
+                  {/* Mark as no interest */}
+                  {lead.status !== "Sem Interesse" && !lead.treatmentClosed && (
+                    <Button
+                      size="sm"
+                      onClick={() => updateStatusMutation.mutate({ id: lead.id, status: "Sem Interesse" })}
+                      disabled={updateStatusMutation.isPending}
+                      className="bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-500/30"
+                    >
+                      <XCircle className="w-4 h-4 mr-1" />
+                      Sem Interesse
+                    </Button>
+                  )}
+
+                  {/* Mark as closed */}
+                  {lead.attended && !lead.treatmentClosed && (
+                    <Button
+                      size="sm"
+                      onClick={() => markClosedMutation.mutate({ id: lead.id, closed: true })}
+                      disabled={markClosedMutation.isPending}
+                      className="bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30"
+                    >
+                      ✓ Fechou
+                    </Button>
+                  )}
+
+                  {/* Edit */}
+                  <Link href={`/leads/${lead.id}`}>
+                    <Button size="sm" variant="ghost" className="h-9">
+                      <Edit2 className="w-4 h-4" />
+                    </Button>
+                  </Link>
+
+                  {/* Delete */}
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-9 text-red-400 hover:bg-red-400/10"
+                    onClick={() => {
+                      if (confirm("Tem certeza que deseja deletar este lead?")) {
+                        deleteLeadMutation.mutate({ id: lead.id });
+                      }
+                    }}
+                    disabled={deleteLeadMutation.isPending}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="text-center py-12 card-glow">
