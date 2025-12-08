@@ -4,7 +4,7 @@ import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
-import { Loader2, Edit2, Trash2, Download, Phone, CheckCircle, XCircle } from "lucide-react";
+import { Loader2, Edit2, Trash2, Download, Phone, CheckCircle, XCircle, Home } from "lucide-react";
 
 const TREATMENT_TYPES = [
   "Flexível",
@@ -178,11 +178,20 @@ export default function LeadsList() {
       <div className="border-b border-border bg-card/50 backdrop-blur-sm">
         <div className="container py-6">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold neon-glow">Leads</h1>
-              <p className="text-muted-foreground mt-1">
-                {filteredLeads?.length || 0} leads encontrados
-              </p>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => navigate("/dashboard")}
+                className="p-2 hover:bg-card rounded transition-colors text-primary hover:text-primary/80"
+                title="Voltar ao Início"
+              >
+                <Home className="w-6 h-6" />
+              </button>
+              <div>
+                <h1 className="text-3xl font-bold neon-glow">Leads</h1>
+                <p className="text-muted-foreground mt-1">
+                  {filteredLeads?.length || 0} leads encontrados
+                </p>
+              </div>
             </div>
             <div className="flex gap-2">
               <Button

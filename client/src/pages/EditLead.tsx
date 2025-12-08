@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useLocation, useParams } from "wouter";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, CheckCircle, XCircle } from "lucide-react";
+import { ArrowLeft, Loader2, CheckCircle, XCircle, Home } from "lucide-react";
 import { useEffect } from "react";
 
 const leadSchema = z.object({
@@ -164,10 +164,11 @@ export default function EditLead() {
         <div className="container py-6">
           <div className="flex items-center gap-4">
             <button
-              onClick={() => navigate("/leads")}
-              className="p-2 hover:bg-card rounded transition-colors"
+              onClick={() => navigate("/dashboard")}
+              className="p-2 hover:bg-card rounded transition-colors text-primary hover:text-primary/80"
+              title="Voltar ao Início"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <Home className="w-6 h-6" />
             </button>
             <div>
               <h1 className="text-3xl font-bold neon-glow">Editar Lead</h1>

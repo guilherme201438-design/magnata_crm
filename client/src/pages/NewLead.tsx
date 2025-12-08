@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, Home } from "lucide-react";
 
 const leadSchema = z.object({
   patientName: z.string().min(1, "Nome do paciente é obrigatório"),
@@ -80,9 +80,10 @@ export default function NewLead() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate("/dashboard")}
-              className="p-2 hover:bg-card rounded transition-colors"
+              className="p-2 hover:bg-card rounded transition-colors text-primary hover:text-primary/80"
+              title="Voltar ao Início"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <Home className="w-6 h-6" />
             </button>
             <div>
               <h1 className="text-3xl font-bold neon-glow">Novo Lead</h1>
