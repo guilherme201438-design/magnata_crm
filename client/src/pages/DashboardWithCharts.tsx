@@ -2,6 +2,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
 import { Users, Calendar, CheckCircle, TrendingUp, Loader2 } from "lucide-react";
+import { MagnataLogo } from "@/components/MagnataLogo";
 import { useLocation } from "wouter";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useMemo } from "react";
@@ -125,9 +126,12 @@ export default function DashboardWithCharts() {
       <div className="border-b border-border bg-card/50 backdrop-blur-sm">
         <div className="container py-6">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold neon-glow">Magnata do Marketing Digital</h1>
-              <p className="text-muted-foreground mt-1">Dashboard com Análise de Faturamento</p>
+            <div className="flex items-center gap-4">
+              <MagnataLogo />
+              <div>
+                <h1 className="text-3xl font-bold neon-glow">CRM PREMIUM</h1>
+                <p className="text-muted-foreground mt-1">Magnata do Marketing Digital - Dashboard com Análise de Faturamento</p>
+              </div>
             </div>
             <Button onClick={() => navigate("/leads/new")} className="btn-neon">
               + Novo Lead
@@ -330,7 +334,15 @@ export default function DashboardWithCharts() {
       <footer className="border-t border-border mt-12 py-6 bg-card/50 backdrop-blur-sm">
         <div className="container flex items-center justify-between text-sm text-muted-foreground">
           <p>© {new Date().getFullYear()} Magnata do Marketing Digital I.A</p>
-          <p className="neon-glow-cyan">Sistema de Gestão de Leads</p>
+          <div className="flex gap-6 items-center">
+            <a href="https://wa.me/+5585991126516" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-colors neon-glow">
+              Suporte via WhatsApp
+            </a>
+            <a href="https://www.instagram.com/guilherme__magnata?igsh=eXJtZzFmcGhkOHdy" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-colors neon-glow">
+              Instagram
+            </a>
+            <p className="neon-glow-cyan">Sistema de Gestão de Leads</p>
+          </div>
         </div>
       </footer>
     </div>
