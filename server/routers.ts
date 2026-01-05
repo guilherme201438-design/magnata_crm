@@ -338,15 +338,6 @@ export const appRouter = router({
       }))
       .mutation(async ({ ctx, input }) => {
         try {
-          // Verify lead belongs to user
-          const lead = await getLead(input.leadId, ctx.user.id);
-          if (!lead) {
-            throw new TRPCError({
-              code: "NOT_FOUND",
-              message: "Lead not found",
-            });
-          }
-
           await createNotification({
             leadId: input.leadId,
             userId: ctx.user.id,
@@ -388,6 +379,35 @@ export const appRouter = router({
           throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
             message: "Failed to fetch notifications",
+          });
+        }
+      }),
+
+    getPending: protectedProcedure
+      .query(async ({ ctx }) => {
+        try {
+          const notifications = await getPendingNotifications();
+          return notifications;
+        } catch (error) {
+          console.error("Error fetching pending notifications:", error);
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to fetch pending notifications",
+          });
+        }
+      }),
+
+    markAsRead: protectedProcedure
+      .input(z.object({ id: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        try {
+          await markNotificationAsSent(parseInt(input.id));
+          return { success: true };
+        } catch (error) {
+          console.error("Error marking notification as read:", error);
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to mark notification as read",
           });
         }
       }),
