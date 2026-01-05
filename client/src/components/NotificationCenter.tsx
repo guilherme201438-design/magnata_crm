@@ -36,18 +36,23 @@ export function NotificationCenter() {
   // Update notifications when data changes
   useEffect(() => {
     if (pendingNotifications) {
-      setNotifications(
-        pendingNotifications.map((n: any, index: number) => ({
+      const formattedNotifications = pendingNotifications.map((n: any, index: number) => {
+        const appointmentDate = typeof n.appointmentDate === 'string' 
+          ? new Date(n.appointmentDate) 
+          : n.appointmentDate;
+        
+        return {
           id: `${n.leadId}-${n.appointmentDate}-${index}`,
           leadId: n.leadId,
-          patientName: n.patientName,
-          treatmentType: n.treatmentType,
-          appointmentDate: new Date(n.appointmentDate),
+          patientName: n.patientName || 'Paciente',
+          treatmentType: n.treatmentType || 'Consulta',
+          appointmentDate: appointmentDate,
           message: `Consulta de ${n.treatmentType} com ${n.patientName} amanhã!`,
           createdAt: new Date(),
           read: false,
-        }))
-      );
+        };
+      });
+      setNotifications(formattedNotifications);
       setUnreadCount(pendingNotifications.length);
     }
   }, [pendingNotifications, unreadCount]);
@@ -110,7 +115,9 @@ export function NotificationCenter() {
                       Consulta de <span className="text-primary font-semibold">{notification.treatmentType}</span>
                     </p>
                     <p className="text-xs text-muted-foreground mt-2">
-                      📅 {notification.appointmentDate.toLocaleDateString("pt-BR")}
+                      📅 {notification.appointmentDate instanceof Date && !isNaN(notification.appointmentDate.getTime())
+                        ? notification.appointmentDate.toLocaleDateString("pt-BR")
+                        : 'Data inválida'}
                     </p>
                     <button
                       onClick={() => handleMarkAsRead(notification.id)}
