@@ -37,8 +37,8 @@ export function NotificationCenter() {
   useEffect(() => {
     if (pendingNotifications) {
       setNotifications(
-        pendingNotifications.map((n: any) => ({
-          id: `${n.leadId}-${n.appointmentDate}`,
+        pendingNotifications.map((n: any, index: number) => ({
+          id: `${n.leadId}-${n.appointmentDate}-${index}`,
           leadId: n.leadId,
           patientName: n.patientName,
           treatmentType: n.treatmentType,
@@ -50,7 +50,7 @@ export function NotificationCenter() {
       );
       setUnreadCount(pendingNotifications.length);
     }
-  }, [pendingNotifications]);
+  }, [pendingNotifications, unreadCount]);
 
   const handleMarkAsRead = (notificationId: string) => {
     markAsReadMutation.mutate({ id: notificationId });
