@@ -78,9 +78,9 @@ export default function FloatingNotificationButton() {
 
       {/* Notification Panel */}
       {isOpen && currentAppointment && (
-        <div className="fixed bottom-32 right-8 w-96 bg-white rounded-2xl shadow-2xl z-50 overflow-hidden">
+        <div className="fixed bottom-32 right-8 w-96 bg-card border border-border rounded-2xl shadow-2xl z-50 overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-teal-400 to-teal-500 p-6 text-white">
+          <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-6 text-white">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-3">
                 <Calendar className="w-6 h-6" />
@@ -88,12 +88,12 @@ export default function FloatingNotificationButton() {
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-white hover:bg-teal-600 p-1 rounded"
+                className="text-white hover:bg-purple-700 p-1 rounded"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <p className="text-sm text-teal-100">
+            <p className="text-sm text-purple-100">
               {currentIndex + 1} de {appointments.length} agendamentos
             </p>
           </div>
@@ -102,10 +102,10 @@ export default function FloatingNotificationButton() {
           <div className="p-6 space-y-4">
             {/* Patient Name */}
             <div className="flex items-start gap-3">
-              <User className="w-5 h-5 text-gray-600 mt-1 flex-shrink-0" />
+              <User className="w-5 h-5 text-purple-400 mt-1 flex-shrink-0" />
               <div>
-                <p className="text-sm text-gray-500">Paciente</p>
-                <p className="font-semibold text-gray-900">
+                <p className="text-sm text-muted-foreground">Paciente</p>
+                <p className="font-semibold text-foreground">
                   {currentAppointment.patientName}
                 </p>
               </div>
@@ -113,10 +113,10 @@ export default function FloatingNotificationButton() {
 
             {/* Date */}
             <div className="flex items-start gap-3">
-              <Calendar className="w-5 h-5 text-gray-600 mt-1 flex-shrink-0" />
+              <Calendar className="w-5 h-5 text-purple-400 mt-1 flex-shrink-0" />
               <div>
-                <p className="text-sm text-gray-500">Data</p>
-                <p className="font-semibold text-gray-900">
+                <p className="text-sm text-muted-foreground">Data</p>
+                <p className="font-semibold text-foreground">
                   {currentAppointment.appointmentDate && formatDate(currentAppointment.appointmentDate)}
                 </p>
               </div>
@@ -124,10 +124,10 @@ export default function FloatingNotificationButton() {
 
             {/* Time */}
             <div className="flex items-start gap-3">
-              <Clock className="w-5 h-5 text-gray-600 mt-1 flex-shrink-0" />
+              <Clock className="w-5 h-5 text-purple-400 mt-1 flex-shrink-0" />
               <div>
-                <p className="text-sm text-gray-500">Horário</p>
-                <p className="font-semibold text-gray-900">
+                <p className="text-sm text-muted-foreground">Horário</p>
+                <p className="font-semibold text-foreground">
                   {currentAppointment.appointmentDate && formatTime(currentAppointment.appointmentDate)}
                 </p>
               </div>
@@ -135,10 +135,10 @@ export default function FloatingNotificationButton() {
 
             {/* Procedure */}
             <div className="flex items-start gap-3">
-              <Building2 className="w-5 h-5 text-gray-600 mt-1 flex-shrink-0" />
+              <Building2 className="w-5 h-5 text-purple-400 mt-1 flex-shrink-0" />
               <div>
-                <p className="text-sm text-gray-500">Procedimento</p>
-                <p className="font-semibold text-gray-900">
+                <p className="text-sm text-muted-foreground">Procedimento</p>
+                <p className="font-semibold text-foreground">
                   {currentAppointment.treatmentType}
                 </p>
               </div>
@@ -146,10 +146,10 @@ export default function FloatingNotificationButton() {
 
             {/* Phone */}
             <div className="flex items-start gap-3">
-              <Phone className="w-5 h-5 text-gray-600 mt-1 flex-shrink-0" />
+              <Phone className="w-5 h-5 text-purple-400 mt-1 flex-shrink-0" />
               <div>
-                <p className="text-sm text-gray-500">Telefone</p>
-                <p className="font-semibold text-gray-900">
+                <p className="text-sm text-muted-foreground">Telefone</p>
+                <p className="font-semibold text-foreground">
                   {currentAppointment.phone}
                 </p>
               </div>
@@ -165,8 +165,8 @@ export default function FloatingNotificationButton() {
                   onClick={() => setCurrentIndex(index)}
                   className={`w-2 h-2 rounded-full transition-all ${
                     index === currentIndex
-                      ? "bg-teal-500 w-6"
-                      : "bg-gray-300 hover:bg-gray-400"
+                      ? "bg-purple-500 w-6"
+                      : "bg-border hover:bg-muted-foreground"
                   }`}
                   aria-label={`Go to appointment ${index + 1}`}
                 />
@@ -179,13 +179,13 @@ export default function FloatingNotificationButton() {
             <div className="flex justify-between px-6 pb-4">
               <button
                 onClick={handlePrev}
-                className="w-10 h-10 rounded-full bg-teal-100 text-teal-600 hover:bg-teal-200 flex items-center justify-center transition-colors"
+                className="w-10 h-10 rounded-full bg-purple-500/20 text-purple-400 hover:bg-purple-500/30 flex items-center justify-center transition-colors"
               >
                 ‹
               </button>
               <button
                 onClick={handleNext}
-                className="w-10 h-10 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                className="w-10 h-10 rounded-full bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 flex items-center justify-center transition-colors"
               >
                 ›
               </button>
@@ -195,7 +195,7 @@ export default function FloatingNotificationButton() {
           {/* Action Button */}
           <button
             onClick={() => handleWhatsAppClick(currentAppointment)}
-            className="w-full bg-gradient-to-r from-teal-400 to-teal-500 text-white font-semibold py-4 hover:from-teal-500 hover:to-teal-600 transition-all"
+            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold py-4 hover:from-purple-700 hover:to-blue-700 transition-all"
           >
             Entendi
           </button>
