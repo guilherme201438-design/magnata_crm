@@ -4,7 +4,7 @@ import { trpc } from "@/lib/trpc";
 import { Users, Calendar, CheckCircle, TrendingUp, Loader2 } from "lucide-react";
 import { MagnataLogo } from "@/components/MagnataLogo";
 import { NotificationCenter } from "@/components/NotificationCenter";
-import FloatingNotificationButton from "@/components/FloatingNotificationButton";
+
 import { useLocation } from "wouter";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useMemo } from "react";
@@ -125,7 +125,6 @@ export default function DashboardWithCharts() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <NotificationCenter />
-      <FloatingNotificationButton />
       {/* Header */}
       <div className="border-b border-border bg-card/50 backdrop-blur-sm">
         <div className="container py-6">

@@ -39,11 +39,6 @@
 - [x] Sistema de notificação automática funciona
 - [x] Notifica 1 dia antes da consulta
 - [x] Script de notificação está rodando
-- [x] Botão flutuante redondo no canto inferior direito
-- [x] Mostra apenas consultas de amanhã
-- [x] Painel estilo card com informações do paciente
-- [x] Integração WhatsApp com mensagem pré-preenchida
-- [x] Endereço incluído na mensagem de WhatsApp
 
 ## Exportação Excel
 - [x] Botão Exportar Excel funciona
