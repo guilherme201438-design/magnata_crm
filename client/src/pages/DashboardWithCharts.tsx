@@ -4,6 +4,7 @@ import { trpc } from "@/lib/trpc";
 import { Users, Calendar, CheckCircle, TrendingUp, Loader2 } from "lucide-react";
 import { MagnataLogo } from "@/components/MagnataLogo";
 import { NotificationCenter } from "@/components/NotificationCenter";
+import PushNotificationButton from "@/components/PushNotificationButton";
 import { useLocation } from "wouter";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useMemo } from "react";
@@ -135,9 +136,12 @@ export default function DashboardWithCharts() {
                 <p className="text-muted-foreground mt-1">Magnata do Marketing Digital - Dashboard com Análise de Faturamento</p>
               </div>
             </div>
-            <Button onClick={() => navigate("/leads/new")} className="btn-neon">
-              + Novo Lead
-            </Button>
+            <div className="flex items-center gap-4">
+              <PushNotificationButton />
+              <Button onClick={() => navigate("/leads/new")} className="btn-neon">
+                + Novo Lead
+              </Button>
+            </div>
           </div>
         </div>
       </div>

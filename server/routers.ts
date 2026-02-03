@@ -308,6 +308,35 @@ export const appRouter = router({
           });
         }
       }),
+
+    // Get tomorrow's appointments for notifications
+    getTomorrowAppointments: protectedProcedure
+      .query(async ({ ctx }) => {
+        try {
+          const leads = await getLeads(ctx.user.id, {});
+          const today = new Date();
+          const tomorrow = new Date(today);
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          tomorrow.setHours(0, 0, 0, 0);
+
+          const tomorrowEnd = new Date(tomorrow);
+          tomorrowEnd.setHours(23, 59, 59, 999);
+
+          const tomorrowAppointments = leads.filter((lead: any) => {
+            if (!lead.appointmentDate) return false;
+            const appointmentDate = new Date(lead.appointmentDate);
+            return appointmentDate >= tomorrow && appointmentDate <= tomorrowEnd;
+          });
+
+          return tomorrowAppointments;
+        } catch (error) {
+          console.error("Error fetching tomorrow appointments:", error);
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to fetch tomorrow appointments",
+          });
+        }
+      }),
   }),
 
   // ============ DASHBOARD ROUTES ============

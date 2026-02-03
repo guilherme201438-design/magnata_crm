@@ -119,7 +119,7 @@ export default function LeadsList() {
         "Observações",
       ];
 
-      const rows = filteredLeads.map((lead) => [
+      const rows = filteredLeads.map((lead: any) => [
         lead.patientName,
         lead.phone,
         lead.treatmentType,
@@ -134,8 +134,8 @@ export default function LeadsList() {
 
       const csv = [
         headers.join(","),
-        ...rows.map((row) =>
-          row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")
+        ...rows.map((row: any) =>
+          row.map((cell: any) => `"${String(cell).replace(/"/g, '""')}"`).join(",")
         ),
       ].join("\n");
 
@@ -272,7 +272,7 @@ export default function LeadsList() {
           </div>
         ) : filteredLeads && filteredLeads.length > 0 ? (
           <div className="space-y-4">
-            {filteredLeads.map((lead) => (
+            {filteredLeads.map((lead: any) => (
               <div
                 key={lead.id}
                 className="card-glow p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
