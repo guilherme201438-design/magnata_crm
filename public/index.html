@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAGNATA DO CRM - Gestão de Leads e Agendamentos</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(20, 20, 35, 0.8);
+            border-bottom: 2px solid #7c3aed;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #7c3aed, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid #7c3aed;
+            color: #e0e0e0;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: #7c3aed;
+            color: white;
+        }
+
+        /* Notification Alert */
+        .notification-alert {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid #ef4444;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .notification-alert.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-title {
+            font-weight: bold;
+            color: #fca5a5;
+            margin-bottom: 8px;
+        }
+
+        .alert-content {
+            font-size: 14px;
+            color: #e0e0e0;
+        }
+
+        .notification-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            align-items: center;
+        }
+
+        /* Main Content */
+        .content {
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Form Styles */
+        .form-section {
+            background: rgba(20, 20, 35, 0.6);
+            border: 1px solid #7c3aed;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #7c3aed, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #a0a0a0;
+        }
+
+        input,
+        select,
+        textarea {
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #7c3aed;
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #06b6d4;
+            background: rgba(6, 182, 212, 0.1);
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+        }
+
+        textarea {
+            grid-column: 1 / -1;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 400;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            grid-column: 1 / -1;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7c3aed, #06b6d4);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(124, 58, 237, 0.2);
+            color: #7c3aed;
+            border: 1px solid #7c3aed;
+        }
+
+        .btn-secondary:hover {
+            background: #7c3aed;
+            color: white;
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+
+        .btn-danger:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* Table Styles */
+        .table-container {
+            background: rgba(20, 20, 35, 0.6);
+            border: 1px solid #7c3aed;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            overflow-x: auto;
+        }
+
+        .table-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #7c3aed, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: rgba(124, 58, 237, 0.1);
+        }
+
+        th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #7c3aed;
+            border-bottom: 2px solid #7c3aed;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(124, 58, 237, 0.2);
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: rgba(124, 58, 237, 0.05);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        a {
+            color: #06b6d4;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Dashboard Styles */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: rgba(20, 20, 35, 0.6);
+            border: 1px solid #7c3aed;
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            border-color: #06b6d4;
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.2);
+        }
+
+        .card-title {
+            font-size: 14px;
+            color: #a0a0a0;
+            margin-bottom: 8px;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #7c3aed, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: rgba(20, 20, 35, 0.6);
+            border: 1px solid #7c3aed;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #7c3aed;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: rgba(20, 20, 35, 0.95);
+            border: 1px solid #7c3aed;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            backdrop-filter: blur(10px);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #7c3aed, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #e0e0e0;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .close-btn:hover {
+            color: #7c3aed;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #a0a0a0;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-tabs {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th,
+            td {
+                padding: 8px;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">🏢 MAGNATA DO CRM</div>
+            <div class="nav-tabs">
+                <button class="nav-btn active" onclick="showTab('dashboard')">📊 Dashboard</button>
+                <button class="nav-btn" onclick="showTab('novo-paciente')">➕ Novo Paciente</button>
+                <button class="nav-btn" onclick="showTab('agendamentos')">📅 Agendamentos</button>
+                <button class="nav-btn" onclick="showTab('sem-interesse')">❌ Sem Interesse</button>
+                <button class="nav-btn" onclick="showTab('fechados')">✅ Fechados</button>
+                <button class="nav-btn" onclick="showTab('todos')">📋 Todos</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Notification Alert -->
+        <div class="notification-alert" id="notificationAlert">
+            <div class="alert-title">⚠️ ATENÇÃO: Pacientes agendados para amanhã!</div>
+            <div class="alert-content" id="alertContent"></div>
+            <div class="notification-controls">
+                <button class="btn-sm btn-secondary" onclick="prevNotification()">← Anterior</button>
+                <span><span id="currentNotif">1</span> de <span id="totalNotif">1</span></span>
+                <button class="btn-sm btn-secondary" onclick="nextNotification()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="content active">
+            <div class="filter-section">
+                <div class="filter-title">📅 Filtro de Período</div>
+                <div class="filter-grid">
+                    <div class="form-group">
+                        <label>Mês</label>
+                        <select id="filterMes">
+                            <option value="01">Janeiro</option>
+                            <option value="02">Fevereiro</option>
+                            <option value="03">Março</option>
+                            <option value="04">Abril</option>
+                            <option value="05">Maio</option>
+                            <option value="06">Junho</option>
+                            <option value="07">Julho</option>
+                            <option value="08">Agosto</option>
+                            <option value="09">Setembro</option>
+                            <option value="10">Outubro</option>
+                            <option value="11">Novembro</option>
+                            <option value="12">Dezembro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ano</label>
+                        <select id="filterAno"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <button class="btn-primary" onclick="atualizarDashboard()">🔍 Atualizar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-icon">👥</div>
+                    <div class="card-title">Total de Leads</div>
+                    <div class="card-value" id="totalLeads">0</div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="card-icon">📅</div>
+                    <div class="card-title">Agendados</div>
+                    <div class="card-value" id="totalAgendados">0</div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="card-icon">✅</div>
+                    <div class="card-title">Compareceram</div>
+                    <div class="card-value" id="totalCompareceram">0</div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="card-icon">💰</div>
+                    <div class="card-title">Faturamento Total</div>
+                    <div class="card-value" id="totalFaturamento">R$ 0,00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Novo Paciente Tab -->
+        <div id="novo-paciente" class="content">
+            <div class="form-section">
+                <div class="form-title">Cadastro de Novo Paciente</div>
+                <form id="formPaciente" class="form-grid">
+                    <div class="form-group">
+                        <label>Nome do Paciente *</label>
+                        <input type="text" id="nome" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Telefone / WhatsApp *</label>
+                        <input type="tel" id="telefone" placeholder="(85) 99999-9999" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Data que entrou em contato *</label>
+                        <input type="date" id="dataContato" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Data do agendamento *</label>
+                        <input type="date" id="dataAgendamento" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Horário do agendamento *</label>
+                        <input type="time" id="horarioAgendamento" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Status *</label>
+                        <select id="status" required>
+                            <option value="">Selecione um status</option>
+                            <option value="Agendado">Agendado</option>
+                            <option value="Veio">Veio</option>
+                            <option value="Não veio">Não veio</option>
+                            <option value="Sem interesse">Sem interesse</option>
+                            <option value="Fechado">Fechado</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="valorGroup" style="display: none;">
+                        <label>Valor fechado (R$) *</label>
+                        <input type="number" id="valor" step="0.01" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Mídia de origem *</label>
+                        <select id="midia" required>
+                            <option value="">Selecione a mídia</option>
+                            <option value="Facebook">Facebook</option>
+                            <option value="Instagram">Instagram</option>
+                            <option value="Indicação">Indicação</option>
+                            <option value="Guia Campanha">Guia Campanha</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de procedimento *</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="proc1" value="Prótese Flexível">
+                                <label for="proc1">Prótese Flexível</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="proc2" value="Prótese Total">
+                                <label for="proc2">Prótese Total</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="proc3" value="Prótese PPR">
+                                <label for="proc3">Prótese PPR</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="proc4" value="Prótese PPR Mista">
+                                <label for="proc4">Prótese PPR Mista</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Observações</label>
+                        <textarea id="observacoes" placeholder="Adicione observações sobre o paciente..."></textarea>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn-primary">💾 Salvar Paciente</button>
+                        <button type="reset" class="btn-secondary">🔄 Limpar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Agendamentos Tab -->
+        <div id="agendamentos" class="content">
+            <div class="table-container">
+                <div class="table-title">📅 Pacientes Agendados</div>
+                <div id="agendamentosTable"></div>
+            </div>
+        </div>
+
+        <!-- Sem Interesse Tab -->
+        <div id="sem-interesse" class="content">
+            <div class="table-container">
+                <div class="table-title">❌ Pacientes sem Interesse</div>
+                <div id="semInteresseTable"></div>
+            </div>
+        </div>
+
+        <!-- Fechados Tab -->
+        <div id="fechados" class="content">
+            <div class="table-container">
+                <div class="table-title">✅ Pacientes Fechados</div>
+                <div id="fechadosTable"></div>
+            </div>
+        </div>
+
+        <!-- Todos Tab -->
+        <div id="todos" class="content">
+            <div class="filter-section">
+                <div class="filter-title">🔍 Filtros</div>
+                <div class="filter-grid">
+                    <div class="form-group">
+                        <label>Buscar por nome</label>
+                        <input type="text" id="filterNome" placeholder="Digite o nome...">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="filterStatus">
+                            <option value="">Todos</option>
+                            <option value="Agendado">Agendado</option>
+                            <option value="Veio">Veio</option>
+                            <option value="Não veio">Não veio</option>
+                            <option value="Sem interesse">Sem interesse</option>
+                            <option value="Fechado">Fechado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Mídia</label>
+                        <select id="filterMidia">
+                            <option value="">Todas</option>
+                            <option value="Facebook">Facebook</option>
+                            <option value="Instagram">Instagram</option>
+                            <option value="Indicação">Indicação</option>
+                            <option value="Guia Campanha">Guia Campanha</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <button class="btn-primary" onclick="exportarExcel()">📊 Exportar Excel</button>
+                    </div>
+                </div>
+            </div>
+            <div class="table-container">
+                <div class="table-title">📋 Todos os Pacientes</div>
+                <div id="todosTable"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edição -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Editar Paciente</div>
+                <button class="close-btn" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form id="formEditar" class="form-grid">
+                <div class="form-group">
+                    <label>Nome do Paciente *</label>
+                    <input type="text" id="editNome" required>
+                </div>
+                <div class="form-group">
+                    <label>Telefone / WhatsApp *</label>
+                    <input type="tel" id="editTelefone" required>
+                </div>
+                <div class="form-group">
+                    <label>Data que entrou em contato *</label>
+                    <input type="date" id="editDataContato" required>
+                </div>
+                <div class="form-group">
+                    <label>Data do agendamento *</label>
+                    <input type="date" id="editDataAgendamento" required>
+                </div>
+                <div class="form-group">
+                    <label>Horário do agendamento *</label>
+                    <input type="time" id="editHorarioAgendamento" required>
+                </div>
+                <div class="form-group">
+                    <label>Status *</label>
+                    <select id="editStatus" required>
+                        <option value="Agendado">Agendado</option>
+                        <option value="Veio">Veio</option>
+                        <option value="Não veio">Não veio</option>
+                        <option value="Sem interesse">Sem interesse</option>
+                        <option value="Fechado">Fechado</option>
+                    </select>
+                </div>
+                <div class="form-group" id="editValorGroup" style="display: none;">
+                    <label>Valor fechado (R$) *</label>
+                    <input type="number" id="editValor" step="0.01" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Mídia de origem *</label>
+                    <select id="editMidia" required>
+                        <option value="Facebook">Facebook</option>
+                        <option value="Instagram">Instagram</option>
+                        <option value="Indicação">Indicação</option>
+                        <option value="Guia Campanha">Guia Campanha</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de procedimento *</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="editProc1" value="Prótese Flexível">
+                            <label for="editProc1">Prótese Flexível</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="editProc2" value="Prótese Total">
+                            <label for="editProc2">Prótese Total</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="editProc3" value="Prótese PPR">
+                            <label for="editProc3">Prótese PPR</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="editProc4" value="Prótese PPR Mista">
+                            <label for="editProc4">Prótese PPR Mista</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Observações</label>
+                    <textarea id="editObservacoes"></textarea>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">💾 Salvar Alterações</button>
+                    <button type="button" class="btn-secondary" onclick="closeEditModal()">❌ Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Configuração Supabase
+        const SUPABASE_URL = 'https://jcuekgayapltjuyyrsoo.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpjdWVrZ2F5YXBsdGp1eXlyc29vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzU4OTMsImV4cCI6MjA4NTc1MTg5M30.G2mDxTCGIGv8m8SNI6ljJxmKuoTsy5Yh1ZjD9I5I-lg';
+        
+        const { createClient } = window.supabase;
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Data storage
+        let pacientes = [];
+        let currentNotificationIndex = 0;
+        let notificacoesDia = [];
+        let editingId = null;
+
+        // Carregar pacientes do Supabase
+        async function carregarPacientes() {
+            try {
+                const { data, error } = await supabase
+                    .from('pacientes')
+                    .select('*')
+                    .order('dataAgendamento', { ascending: false });
+
+                if (error) {
+                    console.error('Erro ao carregar:', error);
+                    return;
+                }
+
+                pacientes = data || [];
+                verificarNotificacoes();
+                atualizarDashboard();
+            } catch (err) {
+                console.error('Erro:', err);
+            }
+        }
+
+        // Salvar paciente no Supabase
+        async function salvarPaciente(paciente) {
+            try {
+                const { data, error } = await supabase
+                    .from('pacientes')
+                    .insert([paciente])
+                    .select();
+
+                if (error) {
+                    console.error('Erro ao salvar:', error);
+                    alert('Erro ao salvar paciente: ' + error.message);
+                    return false;
+                }
+
+                pacientes.push(data[0]);
+                return true;
+            } catch (err) {
+                console.error('Erro:', err);
+                return false;
+            }
+        }
+
+        // Atualizar paciente no Supabase
+        async function atualizarPaciente(id, dados) {
+            try {
+                const { data, error } = await supabase
+                    .from('pacientes')
+                    .update(dados)
+                    .eq('id', id)
+                    .select();
+
+                if (error) {
+                    console.error('Erro ao atualizar:', error);
+                    alert('Erro ao atualizar paciente: ' + error.message);
+                    return false;
+                }
+
+                const index = pacientes.findIndex(p => p.id === id);
+                if (index !== -1) {
+                    pacientes[index] = data[0];
+                }
+                return true;
+            } catch (err) {
+                console.error('Erro:', err);
+                return false;
+            }
+        }
+
+        // Deletar paciente do Supabase
+        async function deletarPacienteSupabase(id) {
+            try {
+                const { error } = await supabase
+                    .from('pacientes')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) {
+                    console.error('Erro ao deletar:', error);
+                    alert('Erro ao deletar paciente: ' + error.message);
+                    return false;
+                }
+
+                pacientes = pacientes.filter(p => p.id !== id);
+                return true;
+            } catch (err) {
+                console.error('Erro:', err);
+                return false;
+            }
+        }
+
+        // Show tab
+        function showTab(tabName) {
+            document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabName === 'dashboard') {
+                atualizarDashboard();
+            } else if (tabName === 'agendamentos') {
+                renderTable('agendamentos');
+            } else if (tabName === 'sem-interesse') {
+                renderTable('sem-interesse');
+            } else if (tabName === 'fechados') {
+                renderTable('fechados');
+            } else if (tabName === 'todos') {
+                renderTable('todos');
+            }
+        }
+
+        // Form submission
+        document.getElementById('formPaciente').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const procedimentos = Array.from(document.querySelectorAll('.checkbox-item input[type="checkbox"]:checked'))
+                .map(el => el.value);
+            
+            if (procedimentos.length === 0) {
+                alert('Selecione pelo menos um tipo de procedimento!');
+                return;
+            }
+
+            const paciente = {
+                nome: document.getElementById('nome').value,
+                telefone: document.getElementById('telefone').value,
+                dataContato: document.getElementById('dataContato').value,
+                dataAgendamento: document.getElementById('dataAgendamento').value,
+                horarioAgendamento: document.getElementById('horarioAgendamento').value,
+                status: document.getElementById('status').value,
+                valor: document.getElementById('status').value === 'Fechado' ? parseFloat(document.getElementById('valor').value) || 0 : 0,
+                midia: document.getElementById('midia').value,
+                procedimentos: procedimentos.join(','),
+                observacoes: document.getElementById('observacoes').value,
+                criadoEm: new Date().toISOString()
+            };
+
+            const sucesso = await salvarPaciente(paciente);
+            if (sucesso) {
+                this.reset();
+                alert('✅ Paciente cadastrado com sucesso!');
+                verificarNotificacoes();
+                atualizarDashboard();
+            }
+        });
+
+        // Status change - show/hide valor field
+        document.getElementById('status').addEventListener('change', function() {
+            document.getElementById('valorGroup').style.display = this.value === 'Fechado' ? 'block' : 'none';
+        });
+
+        document.getElementById('editStatus').addEventListener('change', function() {
+            document.getElementById('editValorGroup').style.display = this.value === 'Fechado' ? 'block' : 'none';
+        });
+
+        // Filtrar pacientes por mês e ano
+        function pacientesFiltradosPorMes() {
+            const mes = document.getElementById('filterMes').value;
+            const ano = document.getElementById('filterAno').value;
+            
+            return pacientes.filter(p => {
+                if (!p.dataAgendamento) return false;
+                const dataParts = p.dataAgendamento.split('-');
+                return dataParts[0] === ano && dataParts[1] === mes;
+            });
+        }
+
+        // Atualizar dashboard
+        function atualizarDashboard() {
+            const pacientesFiltrados = pacientesFiltradosPorMes();
+            
+            const total = pacientesFiltrados.length;
+            const agendados = pacientesFiltrados.filter(p => p.status === 'Agendado').length;
+            const compareceram = pacientesFiltrados.filter(p => p.status === 'Veio').length;
+            const faturamento = pacientesFiltrados
+                .filter(p => p.status === 'Fechado')
+                .reduce((sum, p) => sum + (p.valor || 0), 0);
+
+            document.getElementById('totalLeads').textContent = total;
+            document.getElementById('totalAgendados').textContent = agendados;
+            document.getElementById('totalCompareceram').textContent = compareceram;
+            document.getElementById('totalFaturamento').textContent = 'R$ ' + faturamento.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // Render table
+        function renderTable(type) {
+            let dados = pacientes;
+            let containerId = type + 'Table';
+
+            if (type === 'agendamentos') {
+                dados = pacientes.filter(p => p.status === 'Agendado');
+            } else if (type === 'sem-interesse') {
+                dados = pacientes.filter(p => p.status === 'Sem interesse');
+            } else if (type === 'fechados') {
+                dados = pacientes.filter(p => p.status === 'Fechado');
+            } else if (type === 'todos') {
+                const filterNome = document.getElementById('filterNome')?.value || '';
+                const filterStatus = document.getElementById('filterStatus')?.value || '';
+                const filterMidia = document.getElementById('filterMidia')?.value || '';
+
+                dados = pacientes.filter(p => {
+                    return (filterNome === '' || p.nome.toLowerCase().includes(filterNome.toLowerCase())) &&
+                           (filterStatus === '' || p.status === filterStatus) &&
+                           (filterMidia === '' || p.midia === filterMidia);
+                });
+            }
+
+            if (dados.length === 0) {
+                document.getElementById(containerId).innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p>Nenhum paciente encontrado</p></div>';
+                return;
+            }
+
+            let html = '<table><thead><tr><th>Nome</th><th>Telefone</th><th>Status</th><th>Procedimento</th><th>Horário</th><th>Valor</th><th>Mídia</th><th>Ações</th></tr></thead><tbody>';
+            
+            dados.forEach(p => {
+                html += `<tr>
+                    <td>${p.nome}</td>
+                    <td><a href="https://wa.me/55${p.telefone.replace(/\D/g, '')}" target="_blank">${p.telefone}</a></td>
+                    <td>${p.status}</td>
+                    <td>${p.procedimentos || '-'}</td>
+                    <td>${p.horarioAgendamento || '-'}</td>
+                    <td>${p.valor > 0 ? 'R$ ' + p.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '-'}</td>
+                    <td>${p.midia}</td>
+                    <td class="action-buttons">
+                        <button class="btn-sm btn-secondary" onclick="abrirEditModal(${p.id})">✏️ Editar</button>
+                        <button class="btn-sm btn-danger" onclick="deletarPaciente(${p.id})">🗑️ Deletar</button>
+                    </td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            document.getElementById(containerId).innerHTML = html;
+        }
+
+        // Abrir modal de edição
+        function abrirEditModal(id) {
+            const paciente = pacientes.find(p => p.id === id);
+            if (!paciente) return;
+
+            editingId = id;
+            document.getElementById('editNome').value = paciente.nome;
+            document.getElementById('editTelefone').value = paciente.telefone;
+            document.getElementById('editDataContato').value = paciente.dataContato;
+            document.getElementById('editDataAgendamento').value = paciente.dataAgendamento;
+            document.getElementById('editHorarioAgendamento').value = paciente.horarioAgendamento;
+            document.getElementById('editStatus').value = paciente.status;
+            document.getElementById('editValor').value = paciente.valor;
+            document.getElementById('editMidia').value = paciente.midia;
+            document.getElementById('editObservacoes').value = paciente.observacoes;
+
+            // Desmarcar todos os checkboxes
+            document.querySelectorAll('#editModal .checkbox-item input[type="checkbox"]').forEach(cb => cb.checked = false);
+
+            // Marcar os procedimentos do paciente
+            const procedimentos = (paciente.procedimentos || '').split(',');
+            procedimentos.forEach(proc => {
+                const checkbox = Array.from(document.querySelectorAll('#editModal .checkbox-item input[type="checkbox"]'))
+                    .find(cb => cb.value === proc.trim());
+                if (checkbox) checkbox.checked = true;
+            });
+
+            if (paciente.status === 'Fechado') {
+                document.getElementById('editValorGroup').style.display = 'block';
+            }
+
+            document.getElementById('editModal').classList.add('show');
+        }
+
+        // Fechar modal de edição
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('show');
+            editingId = null;
+        }
+
+        // Salvar edição
+        document.getElementById('formEditar').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const procedimentos = Array.from(document.querySelectorAll('#editModal .checkbox-item input[type="checkbox"]:checked'))
+                .map(el => el.value);
+
+            if (procedimentos.length === 0) {
+                alert('Selecione pelo menos um tipo de procedimento!');
+                return;
+            }
+
+            const dados = {
+                nome: document.getElementById('editNome').value,
+                telefone: document.getElementById('editTelefone').value,
+                dataContato: document.getElementById('editDataContato').value,
+                dataAgendamento: document.getElementById('editDataAgendamento').value,
+                horarioAgendamento: document.getElementById('editHorarioAgendamento').value,
+                status: document.getElementById('editStatus').value,
+                valor: document.getElementById('editStatus').value === 'Fechado' ? parseFloat(document.getElementById('editValor').value) || 0 : 0,
+                midia: document.getElementById('editMidia').value,
+                procedimentos: procedimentos.join(','),
+                observacoes: document.getElementById('editObservacoes').value
+            };
+
+            const sucesso = await atualizarPaciente(editingId, dados);
+            if (sucesso) {
+                closeEditModal();
+                alert('✅ Paciente atualizado com sucesso!');
+                verificarNotificacoes();
+                atualizarDashboard();
+                renderTable('todos');
+            }
+        });
+
+        // Deletar paciente
+        async function deletarPaciente(id) {
+            if (confirm('Tem certeza que deseja deletar este paciente?')) {
+                const sucesso = await deletarPacienteSupabase(id);
+                if (sucesso) {
+                    renderTable('todos');
+                    atualizarDashboard();
+                }
+            }
+        }
+
+        // Exportar Excel
+        function exportarExcel() {
+            let csv = 'Nome,Telefone,Data Contato,Data Agendamento,Horário,Status,Valor,Mídia,Procedimentos,Observações\n';
+            
+            pacientes.forEach(p => {
+                csv += `"${p.nome}","${p.telefone}","${p.dataContato}","${p.dataAgendamento}","${p.horarioAgendamento}","${p.status}","${p.valor}","${p.midia}","${p.procedimentos}","${p.observacoes}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `magnata_crm_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        }
+
+        // Verificar notificações
+        function verificarNotificacoes() {
+            const hoje = new Date();
+            const amanha = new Date(hoje);
+            amanha.setDate(amanha.getDate() + 1);
+            
+            const amanhaStr = amanha.toISOString().split('T')[0];
+            notificacoesDia = pacientes.filter(p => p.dataAgendamento === amanhaStr && p.status === 'Agendado');
+
+            if (notificacoesDia.length > 0) {
+                currentNotificationIndex = 0;
+                atualizarNotificacao();
+                document.getElementById('notificationAlert').classList.add('show');
+            } else {
+                document.getElementById('notificationAlert').classList.remove('show');
+            }
+        }
+
+        // Atualizar notificação
+        function atualizarNotificacao() {
+            if (notificacoesDia.length === 0) return;
+
+            const p = notificacoesDia[currentNotificationIndex];
+            const dataFormatada = new Date(p.dataAgendamento).toLocaleDateString('pt-BR');
+            
+            const mensagemWhatsApp = `Olá ${p.nome}! 👋\n\n📋 Lembrete de Consulta\n\nPaciente: ${p.nome}\nData: ${dataFormatada}\nHorário: ${p.horarioAgendamento}\nProcedimento: ${p.procedimentos}\nMídia: ${p.midia}\n\n${p.observacoes ? 'Observações: ' + p.observacoes + '\n\n' : ''}📍 Endereço:\nR. Guilherme Rocha 218\nEdifício Jalcy Metrópole, Sala 902\n\nAguardamos sua presença! 😊`;
+            
+            const encodedMessage = encodeURIComponent(mensagemWhatsApp);
+            const whatsappUrl = `https://wa.me/55${p.telefone.replace(/\D/g, '')}?text=${encodedMessage}`;
+
+            const alertContent = `
+                <table style="width: 100%; border-collapse: collapse; margin: 10px 0;">
+                    <tr style="background: rgba(124, 58, 237, 0.1);">
+                        <td style="padding: 8px; border: 1px solid rgba(124, 58, 237, 0.3);">👤 Paciente</td>
+                        <td style="padding: 8px; border: 1px solid rgba(124, 58, 237, 0.3);">${p.nome}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid rgba(124, 58, 237, 0.3);">📅 Data</td>
+                        <td style="padding: 8px; border: 1px solid rgba(124, 58, 237, 0.3);">${dataFormatada}</td>
+                    </tr>
+                    <tr style="background: rgba(124, 58, 237, 0.1);">
+                        <td style="padding: 8px; border: 1px solid rgba(124, 58, 237, 0.3);">⏰ Horário</td>
+                        <td style="padding: 8px; border: 1px solid rgba(124, 58, 237, 0.3);">${p.horarioAgendamento}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid rgba(124, 58, 237, 0.3);">🏥 Procedimento</td>
+                        <td style="padding: 8px; border: 1px solid rgba(124, 58, 237, 0.3);">${p.procedimentos}</td>
+                    </tr>
+                    <tr style="background: rgba(124, 58, 237, 0.1);">
+                        <td style="padding: 8px; border: 1px solid rgba(124, 58, 237, 0.3);">📱 Mídia</td>
+                        <td style="padding: 8px; border: 1px solid rgba(124, 58, 237, 0.3);">${p.midia}</td>
+                    </tr>
+                    ${p.observacoes ? `<tr>
+                        <td style="padding: 8px; border: 1px solid rgba(124, 58, 237, 0.3);">📝 Observações</td>
+                        <td style="padding: 8px; border: 1px solid rgba(124, 58, 237, 0.3);">${p.observacoes}</td>
+                    </tr>` : ''}
+                </table>
+                <div style="margin-top: 15px;">
+                    <a href="${whatsappUrl}" target="_blank" class="btn-primary" style="display: inline-block; padding: 10px 20px; background: linear-gradient(135deg, #7c3aed, #06b6d4); color: white; text-decoration: none; border-radius: 6px; font-weight: 600;">💬 Enviar Lembrete WhatsApp</a>
+                </div>
+            `;
+            
+            document.getElementById('alertContent').innerHTML = alertContent;
+            document.getElementById('currentNotif').textContent = currentNotificationIndex + 1;
+            document.getElementById('totalNotif').textContent = notificacoesDia.length;
+        }
+
+        // Navegação de notificações
+        function prevNotification() {
+            if (notificacoesDia.length > 0) {
+                currentNotificationIndex = (currentNotificationIndex - 1 + notificacoesDia.length) % notificacoesDia.length;
+                atualizarNotificacao();
+            }
+        }
+
+        function nextNotification() {
+            if (notificacoesDia.length > 0) {
+                currentNotificationIndex = (currentNotificationIndex + 1) % notificacoesDia.length;
+                atualizarNotificacao();
+            }
+        }
+
+        // Preencher anos disponíveis
+        function preencherAnos() {
+            const anoAtual = new Date().getFullYear();
+            const selectAno = document.getElementById('filterAno');
+            
+            for (let ano = anoAtual - 5; ano <= anoAtual; ano++) {
+                const option = document.createElement('option');
+                option.value = ano;
+                option.textContent = ano;
+                selectAno.appendChild(option);
+            }
+            
+            selectAno.value = anoAtual;
+        }
+
+        // Definir mês e ano atuais como padrão
+        function definirMesAnoAtual() {
+            const hoje = new Date();
+            const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+            const ano = hoje.getFullYear();
+            
+            document.getElementById('filterMes').value = mes;
+            document.getElementById('filterAno').value = ano;
+        }
+
+        // Filtros
+        document.getElementById('filterNome')?.addEventListener('input', () => renderTable('todos'));
+        document.getElementById('filterStatus')?.addEventListener('change', () => renderTable('todos'));
+        document.getElementById('filterMidia')?.addEventListener('change', () => renderTable('todos'));
+
+        // Fechar modal ao clicar fora
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        });
+
+        // Initialize
+        preencherAnos();
+        definirMesAnoAtual();
+        carregarPacientes();
+    </script>
+</body>
+</html>
