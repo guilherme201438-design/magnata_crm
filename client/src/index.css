@@ -43,74 +43,74 @@
 }
 
 :root {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-600);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --radius: 0.65rem;
-  --background: oklch(0.08 0.01 280);
-  --foreground: oklch(0.95 0.01 280);
-  --card: oklch(0.12 0.01 280);
-  --card-foreground: oklch(0.95 0.01 280);
-  --popover: oklch(0.12 0.01 280);
-  --popover-foreground: oklch(0.95 0.01 280);
-  --secondary: oklch(0.5 0.3 200);
-  --secondary-foreground: oklch(0.98 0.01 280);
-  --muted: oklch(0.35 0.05 280);
-  --muted-foreground: oklch(0.65 0.05 280);
-  --accent: oklch(0.6 0.3 270);
-  --accent-foreground: oklch(0.98 0.01 280);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.2 0.02 280);
-  --input: oklch(0.15 0.01 280);
-  --ring: oklch(0.6 0.3 270);
-  --sidebar: oklch(0.12 0.01 280);
-  --sidebar-foreground: oklch(0.95 0.01 280);
-  --sidebar-accent: oklch(0.6 0.3 270);
-  --sidebar-accent-foreground: oklch(0.98 0.01 280);
-  --sidebar-border: oklch(0.2 0.02 280);
-  --sidebar-ring: oklch(0.6 0.3 270);
+  --primary: #0066cc;
+  --primary-foreground: #ffffff;
+  --sidebar-primary: #0066cc;
+  --sidebar-primary-foreground: #ffffff;
+  --chart-1: #0066cc;
+  --chart-2: #00ccff;
+  --chart-3: #00ff99;
+  --chart-4: #ffcc00;
+  --chart-5: #ff6600;
+  --radius: 0.5rem;
+  --background: #1a1a2e;
+  --foreground: #ffffff;
+  --card: #16213e;
+  --card-foreground: #ffffff;
+  --popover: #16213e;
+  --popover-foreground: #ffffff;
+  --secondary: #00ccff;
+  --secondary-foreground: #1a1a2e;
+  --muted: #4a5568;
+  --muted-foreground: #cbd5e0;
+  --accent: #00ff99;
+  --accent-foreground: #1a1a2e;
+  --destructive: #ff3333;
+  --destructive-foreground: #ffffff;
+  --border: #0066cc;
+  --input: #0f3460;
+  --ring: #0066cc;
+  --sidebar: #16213e;
+  --sidebar-foreground: #ffffff;
+  --sidebar-accent: #0066cc;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #0066cc;
+  --sidebar-ring: #0066cc;
 }
 
 .dark {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-500);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --background: oklch(0.08 0.01 280);
-  --foreground: oklch(0.95 0.01 280);
-  --card: oklch(0.12 0.01 280);
-  --card-foreground: oklch(0.95 0.01 280);
-  --popover: oklch(0.12 0.01 280);
-  --popover-foreground: oklch(0.95 0.01 280);
-  --secondary: oklch(0.5 0.3 200);
-  --secondary-foreground: oklch(0.98 0.01 280);
-  --muted: oklch(0.35 0.05 280);
-  --muted-foreground: oklch(0.65 0.05 280);
-  --accent: oklch(0.6 0.3 270);
-  --accent-foreground: oklch(0.98 0.01 280);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.2 0.02 280);
-  --input: oklch(0.15 0.01 280);
-  --ring: oklch(0.6 0.3 270);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --sidebar: oklch(0.12 0.01 280);
-  --sidebar-foreground: oklch(0.95 0.01 280);
-  --sidebar-accent: oklch(0.6 0.3 270);
-  --sidebar-accent-foreground: oklch(0.98 0.01 280);
-  --sidebar-border: oklch(0.2 0.02 280);
-  --sidebar-ring: oklch(0.6 0.3 270);
+  --primary: #0066cc;
+  --primary-foreground: #ffffff;
+  --sidebar-primary: #0066cc;
+  --sidebar-primary-foreground: #ffffff;
+  --background: #1a1a2e;
+  --foreground: #ffffff;
+  --card: #16213e;
+  --card-foreground: #ffffff;
+  --popover: #16213e;
+  --popover-foreground: #ffffff;
+  --secondary: #00ccff;
+  --secondary-foreground: #1a1a2e;
+  --muted: #4a5568;
+  --muted-foreground: #cbd5e0;
+  --accent: #00ff99;
+  --accent-foreground: #1a1a2e;
+  --destructive: #ff3333;
+  --destructive-foreground: #ffffff;
+  --border: #0066cc;
+  --input: #0f3460;
+  --ring: #0066cc;
+  --chart-1: #0066cc;
+  --chart-2: #00ccff;
+  --chart-3: #00ff99;
+  --chart-4: #ffcc00;
+  --chart-5: #ff6600;
+  --sidebar: #16213e;
+  --sidebar-foreground: #ffffff;
+  --sidebar-accent: #0066cc;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #0066cc;
+  --sidebar-ring: #0066cc;
 }
 
 @layer base {
@@ -134,24 +134,11 @@
 }
 
 @layer components {
-  /**
-   * Custom container utility that centers content and adds responsive padding.
-   *
-   * This overrides Tailwind's default container behavior to:
-   * - Auto-center content (mx-auto)
-   * - Add responsive horizontal padding
-   * - Set max-width for large screens
-   *
-   * Usage: <div className="container">...</div>
-   *
-   * For custom widths, use max-w-* utilities directly:
-   * <div className="max-w-6xl mx-auto px-4">...</div>
-   */
   .container {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 1rem; /* 16px - mobile padding */
+    padding-left: 1rem;
     padding-right: 1rem;
   }
 
@@ -162,130 +149,50 @@
 
   @media (min-width: 640px) {
     .container {
-      padding-left: 1.5rem; /* 24px - tablet padding */
+      padding-left: 1.5rem;
       padding-right: 1.5rem;
     }
   }
 
   @media (min-width: 1024px) {
     .container {
-      padding-left: 2rem; /* 32px - desktop padding */
+      padding-left: 2rem;
       padding-right: 2rem;
-      max-width: 1280px; /* Standard content width */
+      max-width: 1280px;
     }
   }
 
-  /* Neon glow effects */
-  .neon-glow {
-    text-shadow: 0 0 10px rgba(147, 51, 234, 0.8), 0 0 20px rgba(147, 51, 234, 0.6);
+  /* Header bar - Blue professional style */
+  .header-bar {
+    @apply bg-blue-700 text-white shadow-lg;
   }
 
-  .neon-glow-blue {
-    text-shadow: 0 0 10px rgba(59, 130, 246, 0.8), 0 0 20px rgba(59, 130, 246, 0.6);
+  /* Navigation buttons */
+  .nav-button {
+    @apply px-4 py-2 rounded-lg font-semibold transition-all duration-200 border-0;
   }
 
-  .neon-glow-cyan {
-    text-shadow: 0 0 10px rgba(34, 211, 238, 0.8), 0 0 20px rgba(34, 211, 238, 0.6);
+  .nav-button-active {
+    @apply bg-green-500 text-white hover:bg-green-600;
   }
 
-  /* Animations */
-  @keyframes gradient-shift {
-    0%, 100% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
+  .nav-button-inactive {
+    @apply bg-blue-600 text-white hover:bg-blue-700;
   }
 
-  .gradient-animate {
-    background-size: 200% 200%;
-    animation: gradient-shift 3s ease infinite;
+  /* Card with blue border */
+  .card-blue {
+    @apply bg-card text-card-foreground rounded-lg border-2 border-blue-500 p-6 transition-all duration-300;
   }
 
-  @keyframes pulse-glow {
-    0%, 100% {
-      opacity: 1;
-      box-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
-    }
-    50% {
-      opacity: 0.8;
-      box-shadow: 0 0 30px rgba(147, 51, 234, 0.8);
-    }
+  .card-blue:hover {
+    @apply border-blue-400 shadow-lg;
+    box-shadow: 0 0 15px rgba(0, 102, 204, 0.3);
   }
 
-  .pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-
-  @keyframes slide-in-right {
-    from {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-
-  .slide-in-right {
-    animation: slide-in-right 0.3s ease-out;
-  }
-
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  .fade-in {
-    animation: fade-in 0.3s ease-out;
-  }
-
-  @keyframes scale-in {
-    from {
-      transform: scale(0.95);
-      opacity: 0;
-    }
-    to {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-
-  .scale-in {
-    animation: scale-in 0.2s ease-out;
-  }
-
-  /* Button neon */
-  .btn-neon {
-    @apply relative inline-flex items-center justify-center px-6 py-3 font-semibold text-white rounded-lg transition-all duration-300;
-    background: linear-gradient(135deg, rgb(147, 51, 234), rgb(59, 130, 246));
-    box-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
-  }
-
-  .btn-neon:hover {
-    box-shadow: 0 0 30px rgba(147, 51, 234, 0.8), 0 0 40px rgba(59, 130, 246, 0.6);
-    transform: translateY(-2px);
-  }
-
-  .btn-neon:active {
-    transform: translateY(0);
-  }
-
-  /* Card with glow */
-  .card-glow {
-    @apply bg-card text-card-foreground rounded-lg border border-border p-6 transition-all duration-300;
-    box-shadow: 0 0 20px rgba(147, 51, 234, 0.1);
-  }
-
-  .card-glow:hover {
-    box-shadow: 0 0 30px rgba(147, 51, 234, 0.2);
-    border-color: rgb(147, 51, 234);
+  /* Stats value - Green */
+  .stats-value {
+    @apply text-green-400 font-bold text-3xl;
   }
 
   /* Status badges */
@@ -307,5 +214,18 @@
 
   .badge-no-interest {
     @apply bg-red-500/20 text-red-300 border border-red-500/30;
+  }
+
+  /* Button styles */
+  .btn-primary {
+    @apply px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200;
+  }
+
+  .btn-success {
+    @apply px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-all duration-200;
+  }
+
+  .btn-danger {
+    @apply px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-all duration-200;
   }
 }

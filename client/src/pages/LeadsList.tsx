@@ -4,7 +4,7 @@ import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
-import { Loader2, Edit2, Trash2, Download, Phone, CheckCircle, XCircle, Home } from "lucide-react";
+import { Loader2, Edit2, Trash2, Download, Phone, CheckCircle, XCircle } from "lucide-react";
 
 const TREATMENT_TYPES = [
   "Flexível",
@@ -174,59 +174,102 @@ export default function LeadsList() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Header */}
-      <div className="border-b border-border bg-card/50 backdrop-blur-sm">
-        <div className="container py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => navigate("/dashboard")}
-                className="p-2 hover:bg-card rounded transition-colors text-primary hover:text-primary/80"
-                title="Voltar ao Início"
-              >
-                <Home className="w-6 h-6" />
-              </button>
-              <div>
-                <h1 className="text-3xl font-bold neon-glow">Leads</h1>
-                <p className="text-muted-foreground mt-1">
-                  {filteredLeads?.length || 0} leads encontrados
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                onClick={handleExportExcel}
-                variant="outline"
-                className="border-border"
-              >
-                <Download className="w-4 h-4 mr-2" />
-                Exportar Excel
-              </Button>
-              <Button 
-                onClick={() => navigate("/leads/new")}
-                className="btn-neon"
-              >
-                + Novo Lead
-              </Button>
-            </div>
+      {/* Header Bar */}
+      <div className="header-bar">
+        <div className="container py-4 flex items-center justify-between">
+          <h1 className="text-xl font-bold">MAGNATA DO CRM</h1>
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="text-white hover:text-gray-200 transition-colors"
+          >
+            ← Voltar
+          </button>
+        </div>
+      </div>
+
+      {/* Navigation Menu */}
+      <div className="bg-gray-900 border-b-2 border-blue-700">
+        <div className="container py-3">
+          <div className="flex gap-3 flex-wrap">
+            <button 
+              onClick={() => navigate("/dashboard")}
+              className="nav-button nav-button-inactive"
+            >
+              🏠 Dashboard
+            </button>
+            <button 
+              onClick={() => navigate("/leads/new")}
+              className="nav-button nav-button-inactive"
+            >
+              ➕ Novo Paciente
+            </button>
+            <button 
+              onClick={() => navigate("/leads")}
+              className="nav-button nav-button-active"
+            >
+              📋 Agendados
+            </button>
+            <button 
+              onClick={() => navigate("/leads")}
+              className="nav-button nav-button-inactive"
+            >
+              ❌ Sem Interesse
+            </button>
+            <button 
+              onClick={() => navigate("/leads")}
+              className="nav-button nav-button-inactive"
+            >
+              ✅ Fechados
+            </button>
+            <button 
+              onClick={() => navigate("/leads")}
+              className="nav-button nav-button-inactive"
+            >
+              📊 Todos
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Page Title */}
+      <div className="container py-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold">Leads</h2>
+            <p className="text-gray-400 text-sm">{filteredLeads?.length || 0} leads encontrados</p>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              onClick={handleExportExcel}
+              className="btn-primary flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              Exportar Excel
+            </Button>
+            <Button 
+              onClick={() => navigate("/leads/new")}
+              className="btn-success flex items-center gap-2"
+            >
+              ➕ Novo Lead
+            </Button>
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="border-b border-border bg-card/30">
+      <div className="bg-gray-900 border-b-2 border-blue-700">
         <div className="container py-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Input
               placeholder="Buscar por nome ou telefone..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-input border-border"
+              className="bg-gray-800 border-2 border-blue-600 text-white placeholder-gray-500"
             />
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 bg-input border border-border rounded-md text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+              className="px-3 py-2 bg-gray-800 border-2 border-blue-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Todos os status</option>
               {STATUS_OPTIONS.map((status) => (
@@ -238,7 +281,7 @@ export default function LeadsList() {
             <select
               value={treatmentFilter}
               onChange={(e) => setTreatmentFilter(e.target.value)}
-              className="px-3 py-2 bg-input border border-border rounded-md text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+              className="px-3 py-2 bg-gray-800 border-2 border-blue-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Todos os tipos</option>
               {TREATMENT_TYPES.map((type) => (
@@ -255,8 +298,7 @@ export default function LeadsList() {
                 setAttendedFilter("");
                 setClosedFilter("");
               }}
-              variant="outline"
-              className="border-border"
+              className="btn-primary"
             >
               Limpar Filtros
             </Button>
@@ -268,35 +310,35 @@ export default function LeadsList() {
       <div className="container py-8">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
           </div>
         ) : filteredLeads && filteredLeads.length > 0 ? (
           <div className="space-y-4">
             {filteredLeads.map((lead: any) => (
               <div
                 key={lead.id}
-                className="card-glow p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+                className="card-blue p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
               >
                 <div className="flex-1">
-                  <h3 className="font-semibold text-lg">{lead.patientName}</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2 text-sm text-muted-foreground">
+                  <h3 className="font-semibold text-lg text-white">{lead.patientName}</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2 text-sm">
                     <div>
-                      <p className="text-xs">Telefone</p>
-                      <a href={`tel:${lead.phone}`} className="text-primary hover:underline flex items-center gap-1">
+                      <p className="text-xs text-gray-400">Telefone</p>
+                      <a href={`tel:${lead.phone}`} className="text-blue-400 hover:underline flex items-center gap-1">
                         <Phone className="w-3 h-3" />
                         {lead.phone}
                       </a>
                     </div>
                     <div>
-                      <p className="text-xs">Tipo</p>
-                      <p>{lead.treatmentType}</p>
+                      <p className="text-xs text-gray-400">Tipo</p>
+                      <p className="text-white">{lead.treatmentType}</p>
                     </div>
                     <div>
-                      <p className="text-xs">Valor</p>
-                      <p className="text-primary font-semibold">R$ {(lead.treatmentValue / 100).toFixed(2)}</p>
+                      <p className="text-xs text-gray-400">Valor</p>
+                      <p className="text-green-400 font-semibold">R$ {(lead.treatmentValue / 100).toFixed(2)}</p>
                     </div>
                     <div>
-                      <p className="text-xs">Status</p>
+                      <p className="text-xs text-gray-400">Status</p>
                       <span className={`inline-block px-2 py-1 rounded text-xs font-medium border ${getStatusBadgeClass(lead.status)}`}>
                         {lead.status}
                       </span>
@@ -311,82 +353,65 @@ export default function LeadsList() {
                       size="sm"
                       onClick={() => markAttendedMutation.mutate({ id: lead.id, attended: true })}
                       disabled={markAttendedMutation.isPending}
-                      className="bg-green-500/20 text-green-300 border border-green-500/30 hover:bg-green-500/30"
+                      className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-1"
                     >
-                      <CheckCircle className="w-4 h-4 mr-1" />
+                      <CheckCircle className="w-4 h-4" />
                       Veio
                     </Button>
                   )}
-
-                  {lead.status !== "Sem Interesse" && !lead.treatmentClosed && (
-                    <Button
-                      size="sm"
-                      onClick={() => updateStatusMutation.mutate({ id: lead.id, status: "Sem Interesse" })}
-                      disabled={updateStatusMutation.isPending}
-                      className="bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-500/30"
-                    >
-                      <XCircle className="w-4 h-4 mr-1" />
-                      Sem Interesse
-                    </Button>
-                  )}
-
-                  {lead.attended && !lead.treatmentClosed && (
+                  {!lead.treatmentClosed && lead.attended && (
                     <Button
                       size="sm"
                       onClick={() => markClosedMutation.mutate({ id: lead.id, closed: true })}
                       disabled={markClosedMutation.isPending}
-                      className="bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30"
+                      className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1"
                     >
-                      ✓ Fechou
+                      <CheckCircle className="w-4 h-4" />
+                      Fechou
                     </Button>
                   )}
-
-                  <Button 
-                    size="sm" 
-                    variant="ghost" 
-                    className="h-9"
-                    onClick={() => navigate(`/leads/${lead.id}`)}
-                  >
-                    <Edit2 className="w-4 h-4" />
-                  </Button>
-
+                  {lead.status !== "Sem Interesse" && (
+                    <Button
+                      size="sm"
+                      onClick={() => updateStatusMutation.mutate({ id: lead.id, status: "Sem Interesse" })}
+                      disabled={updateStatusMutation.isPending}
+                      className="bg-red-600 hover:bg-red-700 text-white flex items-center gap-1"
+                    >
+                      <XCircle className="w-4 h-4" />
+                      Sem Interesse
+                    </Button>
+                  )}
                   <Button
                     size="sm"
-                    variant="ghost"
-                    className="h-9 text-red-400 hover:bg-red-400/10"
+                    onClick={() => navigate(`/leads/${lead.id}`)}
+                    className="bg-yellow-600 hover:bg-yellow-700 text-white flex items-center gap-1"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                    Editar
+                  </Button>
+                  <Button
+                    size="sm"
                     onClick={() => {
                       if (confirm("Tem certeza que deseja deletar este lead?")) {
                         deleteLeadMutation.mutate({ id: lead.id });
                       }
                     }}
                     disabled={deleteLeadMutation.isPending}
+                    className="bg-red-700 hover:bg-red-800 text-white flex items-center gap-1"
                   >
                     <Trash2 className="w-4 h-4" />
+                    Deletar
                   </Button>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 card-glow">
-            <p className="text-muted-foreground mb-4">Nenhum lead encontrado</p>
-            <Button 
-              onClick={() => navigate("/leads/new")}
-              className="btn-neon"
-            >
-              Criar Primeiro Lead
-            </Button>
+          <div className="text-center py-12">
+            <p className="text-gray-400">Nenhum lead encontrado</p>
           </div>
         )}
       </div>
-
-      {/* Footer */}
-      <footer className="border-t border-border mt-12 py-6 bg-card/50 backdrop-blur-sm">
-        <div className="container flex items-center justify-between text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} Magnata do Marketing Digital I.A</p>
-          <p className="neon-glow-cyan">Sistema de Gestão de Leads</p>
-        </div>
-      </footer>
     </div>
   );
 }
