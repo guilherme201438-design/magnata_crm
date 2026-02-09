@@ -10,6 +10,41 @@ function getQueryParam(req: Request, key: string): string | undefined {
 }
 
 export function registerOAuthRoutes(app: Express) {
+  // Local login route for simple authentication
+  app.post("/api/oauth/login", async (req: Request, res: Response) => {
+    const { username, password } = req.body;
+
+    // Simple hardcoded credentials for now
+    if (username === "felipe" && password === "mito22") {
+      try {
+        // Create or get user
+        const user = await db.upsertUser({
+          openId: "local-felipe",
+          name: "Felipe",
+          email: "felipe@magnata.com",
+          loginMethod: "local",
+          lastSignedIn: new Date(),
+        });
+
+        // Create session token
+        const sessionToken = await sdk.createSessionToken("local-felipe", {
+          name: "Felipe",
+          expiresInMs: ONE_YEAR_MS,
+        });
+
+        const cookieOptions = getSessionCookieOptions(req);
+        res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+
+        res.json({ success: true, user });
+      } catch (error) {
+        console.error("[Login] Failed", error);
+        res.status(500).json({ error: "Login failed" });
+      }
+    } else {
+      res.status(401).json({ error: "Invalid credentials" });
+    }
+  });
+
   app.get("/api/oauth/callback", async (req: Request, res: Response) => {
     const code = getQueryParam(req, "code");
     const state = getQueryParam(req, "state");

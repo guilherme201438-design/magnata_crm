@@ -67,7 +67,8 @@ export function useAuth(options?: UseAuthOptions) {
     if (typeof window === "undefined") return;
     if (window.location.pathname === redirectPath) return;
 
-    window.location.href = redirectPath
+    // Redirect to login page
+    window.location.href = "/login"
   }, [
     redirectOnUnauthenticated,
     redirectPath,

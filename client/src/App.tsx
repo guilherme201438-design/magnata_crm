@@ -5,15 +5,17 @@ import DashboardWithCharts from "@/pages/DashboardWithCharts";
 import NewLead from "@/pages/NewLead";
 import LeadsList from "@/pages/LeadsList";
 import EditLead from "@/pages/EditLead";
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Loader2 } from "lucide-react";
+import Login from "./pages/Login";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { isAuthenticated, loading } = useAuth();
+  const [, navigate] = useLocation();
 
   if (loading) {
     return (
@@ -24,17 +26,11 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
   }
 
   if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Acesso Negado</h1>
-          <p className="text-muted-foreground mb-6">Você precisa estar autenticado para acessar esta página.</p>
-          <a href="/api/oauth/login" className="btn-neon inline-block px-6 py-3">
-            Fazer Login
-          </a>
-        </div>
-      </div>
-    );
+    // Redirect to login page
+    if (typeof window !== "undefined") {
+      window.location.href = "/login";
+    }
+    return null;
   }
 
   return <Component />;
@@ -43,7 +39,8 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
 function Router() {
   return (
     <Switch>
-      <Route path={"/"} component={() => <ProtectedRoute component={DashboardWithCharts} />} />
+      <Route path="/login" component={Login} />
+      <Route path="/" component={() => <ProtectedRoute component={DashboardWithCharts} />} />
       <Route path={"/dashboard"} component={() => <ProtectedRoute component={DashboardWithCharts} />} />
       <Route path={"/leads"} component={() => <ProtectedRoute component={LeadsList} />} />
       <Route path={"/leads/new"} component={() => <ProtectedRoute component={NewLead} />} />
